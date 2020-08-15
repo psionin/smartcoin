@@ -43,6 +43,11 @@ struct Params {
     int nMajorityEnforceBlockUpgrade;
     int nMajorityRejectBlockOutdated;
     int nMajorityWindow;
+    /** Smartcoin initial forks 2014-2015 */
+    int fork1Height;
+    int fork2Height;
+    int fork3Height;
+    int fork4Height;
     /** Block height and hash at which BIP34 becomes active */
     int BIP34Height;
     uint256 BIP34Hash;

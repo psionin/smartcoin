@@ -1192,6 +1192,7 @@ bool ReadBlockHeaderFromDisk(CBlockHeader& block, const CBlockIndex* pindex, con
     return ReadBlockOrHeader(block, pindex, consensusParams);
 }
 
+// From Litecoin, not used
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
     int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;

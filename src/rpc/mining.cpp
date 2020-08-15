@@ -124,7 +124,7 @@ UniValue generateBlocks(boost::shared_ptr<CReserveScript> coinbaseScript, int nG
             LOCK(cs_main);
             IncrementExtraNonce(pblock, chainActive.Tip(), nExtraNonce);
         }
-        // Smartcoin: Don't mine Aux blocks in regtest
+        // Dogecoin: Don't mine Aux blocks in regtest
         //CAuxPow::initAuxPow(*pblock);
         //CPureBlockHeader& miningHeader = pblock->auxpow->parentBlock;
         while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(), pblock->nBits, Params().GetConsensus(nHeight))) {

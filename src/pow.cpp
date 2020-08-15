@@ -37,7 +37,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     if (pindexLast == NULL)
         return nProofOfWorkLimit;
 
-    // Smartcoin: Special rules for minimum difficulty blocks with Digishield
+    // Dogecoin: Special rules for minimum difficulty blocks with Digishield
     if (AllowDigishieldMinDifficultyForBlock(pindexLast, pblock, params))
     {
         // Special difficulty rule for testnet:

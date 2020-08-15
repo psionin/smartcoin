@@ -12,14 +12,7 @@
 #include "util.h"
 #include "validation.h"
 
-int static generateMTRandom(unsigned int s, int range)
-{
-    boost::mt19937 gen(s);
-    boost::uniform_int<> dist(1, range);
-    return dist(gen);
-}
-
-// Smartcoin: Normally minimum difficulty blocks can only occur in between
+// Dogecoin: Normally minimum difficulty blocks can only occur in between
 // retarget blocks. However, once we introduce Digishield every block is
 // a retarget, so we need to handle minimum difficulty on all blocks.
 bool AllowDigishieldMinDifficultyForBlock(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
@@ -123,27 +116,31 @@ bool CheckAuxPowProofOfWork(const CBlockHeader& block, const Consensus::Params& 
 }
 
 CAmount GetSmartcoinBlockSubsidy(int nHeight, const Consensus::Params& consensusParams, uint256 prevHash)
-{
-    int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
-
-    if (!consensusParams.fSimplifiedRewards)
-    {
-        // Old-style rewards derived from the previous block hash
-        const std::string cseed_str = prevHash.ToString().substr(7, 7);
-        const char* cseed = cseed_str.c_str();
-        char* endp = NULL;
-        long seed = strtol(cseed, &endp, 16);
-        CAmount maxReward = (1000000 >> halvings) - 1;
-        int rand = generateMTRandom(seed, maxReward);
-
-        return (1 + rand) * COIN;
-    } else if (nHeight < (6 * consensusParams.nSubsidyHalvingInterval)) {
-        // New-style constant rewards for each halving interval
-        return (500000 * COIN) >> halvings;
-    } else {
-        // Constant inflation
-        return 10000 * COIN;
+{ /** Total SMC coins expected: around 30 million */
+    CAmount nSubsidy = 64 * COIN;
+    if (nHeight == 0) {
+        nSubsidy = 0 * COIN;
     }
+    else if (nHeight == 1) { // Premine is 400,000
+        nSubsidy = 400000 * COIN;
+    }
+    else if (nHeight < 1000) { // Low reward for the first 1,000 blocks
+        nSubsidy = 1 * COIN;
+    }
+    else if (nHeight < consensusParams.fork2Height) { // 64 coins until block 200,000
+        nSubsidy = 64 * COIN;
+    }
+    else if (nHeight < consensusParams.fork3Height) { // 32 coins until block 300,000
+        nSubsidy = (32 / ((nHeight + 400000) / 400000)) * COIN;
+    }
+    else { // Then 16 coins with approx yearly halving thereafter
+        nSubsidy = 16 * COIN;
+        nSubsidy >>= nHeight / consensusParams.nSubsidyHalvingInterval;
+        if (nSubsidy < 0.25) {
+            nSubsidy = 0.25 * COIN;
+        }
+    }
+    return nSubsidy;
 }
 
 CAmount GetSmartcoinMinRelayFee(const CTransaction& tx, unsigned int nBytes, bool fAllowFree)
