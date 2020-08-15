@@ -1,36 +1,36 @@
 #!/bin/bash
 #
-#  dogecoind The dogecoin core server.
+#  smartcoind The smartcoin core server.
 #
 #
 # chkconfig: 345 80 20
-# description: dogecoind
-# processname: dogecoind
+# description: smartcoind
+# processname: smartcoind
 #
 
 # Source function library.
 . /etc/init.d/functions
 
-# you can override defaults in /etc/sysconfig/dogecoind, see below
-if [ -f /etc/sysconfig/dogecoind ]; then
-        . /etc/sysconfig/dogecoind
+# you can override defaults in /etc/sysconfig/smartcoind, see below
+if [ -f /etc/sysconfig/smartcoind ]; then
+        . /etc/sysconfig/smartcoind
 fi
 
 RETVAL=0
 
-prog=dogecoind
-# you can override the lockfile via DOGECOIND_LOCKFILE in /etc/sysconfig/dogecoind
-lockfile=${DOGECOIND_LOCKFILE-/var/lock/subsys/dogecoind}
+prog=smartcoind
+# you can override the lockfile via SMARTCOIND_LOCKFILE in /etc/sysconfig/smartcoind
+lockfile=${SMARTCOIND_LOCKFILE-/var/lock/subsys/smartcoind}
 
-# dogecoind defaults to /usr/bin/dogecoind, override with DOGECOIND_BIN
-dogecoind=${DOGECOIND_BIN-/usr/bin/dogecoind}
+# smartcoind defaults to /usr/bin/smartcoind, override with SMARTCOIND_BIN
+smartcoind=${SMARTCOIND_BIN-/usr/bin/smartcoind}
 
-# dogecoind opts default to -disablewallet, override with DOGECOIND_OPTS
-dogecoind_opts=${DOGECOIND_OPTS--disablewallet}
+# smartcoind opts default to -disablewallet, override with SMARTCOIND_OPTS
+smartcoind_opts=${SMARTCOIND_OPTS--disablewallet}
 
 start() {
     echo -n $"Starting $prog: "
-    daemon $DAEMONOPTS $dogecoind $dogecoind_opts
+    daemon $DAEMONOPTS $smartcoind $smartcoind_opts
     RETVAL=$?
     echo
     [ $RETVAL -eq 0 ] && touch $lockfile

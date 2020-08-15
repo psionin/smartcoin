@@ -136,7 +136,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>DogecoinGUI</name>
+    <name>SmartcoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Subskribi &amp;mesaĝon...</translation>
@@ -214,7 +214,7 @@
         <translation>Reindeksado de blokoj sur disko...</translation>
     </message>
     <message>
-        <source>Send coins to a Dogecoin address</source>
+        <source>Send coins to a Smartcoin address</source>
         <translation>Sendi monon al Dogemon-adreso</translation>
     </message>
     <message>
@@ -238,7 +238,7 @@
         <translation>&amp;Kontroli mesaĝon...</translation>
     </message>
     <message>
-        <source>Dogecoin</source>
+        <source>Smartcoin</source>
         <translation>Dogemono</translation>
     </message>
     <message>
@@ -266,11 +266,11 @@
         <translation>Ĉifri la privatajn ŝlosilojn de via monujo</translation>
     </message>
     <message>
-        <source>Sign messages with your Dogecoin addresses to prove you own them</source>
+        <source>Sign messages with your Smartcoin addresses to prove you own them</source>
         <translation>Subskribi mesaĝojn per via Dogemon-adresoj por pravigi, ke vi estas la posedanto</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dogecoin addresses</source>
+        <source>Verify messages to ensure they were signed with specified Smartcoin addresses</source>
         <translation>Kontroli mesaĝojn por kontroli ĉu ili estas subskribitaj per specifaj Dogemon-adresoj</translation>
     </message>
     <message>
@@ -290,8 +290,8 @@
         <translation>Langeto-breto</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dogecoin: URIs)</source>
-        <translation>Peti pagon (kreas QR-kodojn kaj URI-ojn kun prefikso dogecoin:)</translation>
+        <source>Request payments (generates QR codes and smartcoin: URIs)</source>
+        <translation>Peti pagon (kreas QR-kodojn kaj URI-ojn kun prefikso smartcoin:)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -302,8 +302,8 @@
         <translation>Vidigi la liston de uzitaj ricevaj adresoj kaj etikedoj</translation>
     </message>
     <message>
-        <source>Open a dogecoin: URI or payment request</source>
-        <translation>Malfermi dogecoin:-URI-on aŭ pagpeton</translation>
+        <source>Open a smartcoin: URI or payment request</source>
+        <translation>Malfermi smartcoin:-URI-on aŭ pagpeton</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -628,7 +628,7 @@
         <translation>Fakulo</translation>
     </message>
     <message>
-        <source>Automatically open the Dogecoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <source>Automatically open the Smartcoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
         <translation>Aŭtomate malfermi la kursilan pordon por Dogemono. Tio funkcias nur se via kursilo havas la UPnP-funkcion, kaj se tiu ĉi estas ŝaltita.</translation>
     </message>
     <message>
@@ -723,7 +723,7 @@
         <translation>Formularo</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Dogecoin network after a connection is established, but this process has not completed yet.</source>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Smartcoin network after a connection is established, but this process has not completed yet.</source>
         <translation>Eblas, ke la informoj videblaj ĉi tie estas eksdataj. Via monujo aŭtomate sinkoniĝas kun la bitmona reto kiam ili konektiĝas, sed tiu procezo ankoraŭ ne finfariĝis.</translation>
     </message>
     <message>
@@ -1213,7 +1213,7 @@
         <translation>Kopii la aktualan subskribon al la tondejo</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Dogecoin address</source>
+        <source>Sign the message to prove you own this Smartcoin address</source>
         <translation>Subskribi la mesaĝon por pravigi, ke vi estas la posedanto de tiu Dogemon-adreso</translation>
     </message>
     <message>
@@ -1233,7 +1233,7 @@
         <translation>&amp;Kontroli Mesaĝon</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Dogecoin address</source>
+        <source>Verify the message to ensure it was signed with the specified Smartcoin address</source>
         <translation>Kontroli la mesaĝon por pravigi, ke ĝi ja estas subskribita per la specifa Dogemon-adreso</translation>
     </message>
     <message>
@@ -1312,7 +1312,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>dogecoin-core</name>
+    <name>smartcoin-core</name>
     <message>
         <source>Options:</source>
         <translation>Agordoj:</translation>
@@ -1338,7 +1338,7 @@
         <translation>Ruli fone kiel demono kaj akcepti komandojn</translation>
     </message>
     <message>
-        <source>Dogecoin Core</source>
+        <source>Smartcoin Core</source>
         <translation>Kerno de Dogemono</translation>
     </message>
     <message>

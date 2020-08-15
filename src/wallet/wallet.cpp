@@ -2808,8 +2808,8 @@ bool CWallet::AddAccountingEntry(const CAccountingEntry& acentry, CWalletDB *pwa
 
 CAmount CWallet::GetRequiredFee(const CMutableTransaction& tx, unsigned int nTxBytes)
 {
-    // Dogecoin: Add an increased fee for each dust output
-    return std::max(minTxFee.GetFee(nTxBytes) + GetDogecoinDustFee(tx.vout, minTxFee), ::minRelayTxFee.GetFee(nTxBytes));
+    // Smartcoin: Add an increased fee for each dust output
+    return std::max(minTxFee.GetFee(nTxBytes) + GetSmartcoinDustFee(tx.vout, minTxFee), ::minRelayTxFee.GetFee(nTxBytes));
 }
 
 CAmount CWallet::GetRequiredFee(unsigned int nTxBytes)
@@ -2835,7 +2835,7 @@ CAmount CWallet::GetMinimumFee(const CMutableTransaction& tx, unsigned int nTxBy
             nFeeNeeded = fallbackFee.GetFee(nTxBytes);
     }
     // prevent user from paying a fee below minRelayTxFee or minTxFee
-    // Dogecoin: Drop the smart fee estimate, use GetRequiredFee
+    // Smartcoin: Drop the smart fee estimate, use GetRequiredFee
     // nFeeNeeded = std::max(nFeeNeeded, GetRequiredFee(tx, nTxBytes));
     nFeeNeeded = GetRequiredFee(tx, nTxBytes);
     // But always obey the maximum

@@ -48,7 +48,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>DogecoinGUI</name>
+    <name>SmartcoinGUI</name>
     <message>
         <source>&amp;Transactions</source>
         <translation>&amp;Транзакциялар</translation>
@@ -70,7 +70,7 @@
         <translation>Құпия сөзді өзгерту</translation>
     </message>
     <message>
-        <source>Dogecoin</source>
+        <source>Smartcoin</source>
         <translation>Биткоин</translation>
     </message>
     <message>
@@ -298,7 +298,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>dogecoin-core</name>
+    <name>smartcoin-core</name>
     <message>
         <source>Information</source>
         <translation>Информация</translation>

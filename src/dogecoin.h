@@ -1,4 +1,4 @@
-// Copyright (c) 2015 The Dogecoin Core developers
+// Copyright (c) 2015 The Smartcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,8 +7,8 @@
 #include "chainparams.h"
 
 bool AllowDigishieldMinDifficultyForBlock(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params);
-CAmount GetDogecoinBlockSubsidy(int nHeight, const Consensus::Params& consensusParams, uint256 prevHash);
-unsigned int CalculateDogecoinNextWorkRequired(const CBlockIndex* pindexLast, int64_t nLastRetargetTime, const Consensus::Params& params);
+CAmount GetSmartcoinBlockSubsidy(int nHeight, const Consensus::Params& consensusParams, uint256 prevHash);
+unsigned int CalculateSmartcoinNextWorkRequired(const CBlockIndex* pindexLast, int64_t nLastRetargetTime, const Consensus::Params& params);
 
 /**
  * Check proof-of-work of a block header, taking auxpow into account.
@@ -18,5 +18,5 @@ unsigned int CalculateDogecoinNextWorkRequired(const CBlockIndex* pindexLast, in
  */
 bool CheckAuxPowProofOfWork(const CBlockHeader& block, const Consensus::Params& params);
 
-CAmount GetDogecoinMinRelayFee(const CTransaction& tx, unsigned int nBytes, bool fAllowFree);
-CAmount GetDogecoinDustFee(const std::vector<CTxOut> &vout, CFeeRate &baseFeeRate);
+CAmount GetSmartcoinMinRelayFee(const CTransaction& tx, unsigned int nBytes, bool fAllowFree);
+CAmount GetSmartcoinDustFee(const std::vector<CTxOut> &vout, CFeeRate &baseFeeRate);

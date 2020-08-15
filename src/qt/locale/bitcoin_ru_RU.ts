@@ -64,10 +64,10 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>DogecoinGUI</name>
+    <name>SmartcoinGUI</name>
     <message>
-        <source>Dogecoin</source>
-        <translation>Dogecoin Core</translation>
+        <source>Smartcoin</source>
+        <translation>Smartcoin Core</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -234,14 +234,14 @@
     </message>
     </context>
 <context>
-    <name>dogecoin-core</name>
+    <name>smartcoin-core</name>
     <message>
-        <source>Dogecoin Core</source>
-        <translation>Dogecoin Core</translation>
+        <source>Smartcoin Core</source>
+        <translation>Smartcoin Core</translation>
     </message>
     <message>
         <source>Whitelisted peers cannot be DoS banned and their transactions are always relayed, even if they are already in the mempool, useful e.g. for a gateway</source>
-        <translation>dogecoin-core</translation>
+        <translation>smartcoin-core</translation>
     </message>
     <message>
         <source>Information</source>

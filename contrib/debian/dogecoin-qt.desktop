@@ -1,13 +1,13 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=Dogecoin Core
-Comment=Connect to the Dogecoin P2P Network
-Comment[de]=Verbinde mit dem Dogecoin peer-to-peer Netzwerk
-Comment[fr]=Dogecoin, monnaie virtuelle cryptographique pair à pair
-Comment[tr]=Dogecoin, eşten eşe kriptografik sanal para birimi
-Exec=dogecoin-qt %u
+Name=Smartcoin Core
+Comment=Connect to the Smartcoin P2P Network
+Comment[de]=Verbinde mit dem Smartcoin peer-to-peer Netzwerk
+Comment[fr]=Smartcoin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Smartcoin, eşten eşe kriptografik sanal para birimi
+Exec=smartcoin-qt %u
 Terminal=false
 Type=Application
 Icon=dogecoin128
-MimeType=x-scheme-handler/dogecoin;
+MimeType=x-scheme-handler/smartcoin;
 Categories=Office;Finance;

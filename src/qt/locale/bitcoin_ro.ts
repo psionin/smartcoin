@@ -76,7 +76,7 @@
     </message>
 </context>
 <context>
-    <name>DogecoinGUI</name>
+    <name>SmartcoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Semnează &amp;mesajul...</translation>
@@ -142,8 +142,8 @@
         <translation>Deschide &amp;URI...</translation>
     </message>
     <message>
-        <source>Send coins to a Dogecoin address</source>
-        <translation>Trimite monedele către o adresă Dogecoin</translation>
+        <source>Send coins to a Smartcoin address</source>
+        <translation>Trimite monedele către o adresă Smartcoin</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -166,8 +166,8 @@
         <translation>&amp;Verifică mesajul...</translation>
     </message>
     <message>
-        <source>Dogecoin</source>
-        <translation>Dogecoin</translation>
+        <source>Smartcoin</source>
+        <translation>Smartcoin</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -194,12 +194,12 @@
         <translation>Criptează cheile private care aparțin portofelului tău.</translation>
     </message>
     <message>
-        <source>Sign messages with your Dogecoin addresses to prove you own them</source>
-        <translation>Semnează mesajele cu adresa ta de Dogecoin pentru a face dovada că îți aparțin.</translation>
+        <source>Sign messages with your Smartcoin addresses to prove you own them</source>
+        <translation>Semnează mesajele cu adresa ta de Smartcoin pentru a face dovada că îți aparțin.</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Dogecoin addresses</source>
-        <translation>Verifică mesajele cu scopul de a asigura faptul că au fost semnate cu adresa de Dogecoin specificată.</translation>
+        <source>Verify messages to ensure they were signed with specified Smartcoin addresses</source>
+        <translation>Verifică mesajele cu scopul de a asigura faptul că au fost semnate cu adresa de Smartcoin specificată.</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -214,12 +214,12 @@
         <translation>&amp;Ajutor</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and dogecoin: URIs)</source>
-        <translation>Cerere plată (generează coduri QR și dogecoin: URIs)</translation>
+        <source>Request payments (generates QR codes and smartcoin: URIs)</source>
+        <translation>Cerere plată (generează coduri QR și smartcoin: URIs)</translation>
     </message>
     <message>
-        <source>Open a dogecoin: URI or payment request</source>
-        <translation>Deschide un dogecoin: URI sau cerere de plată</translation>
+        <source>Open a smartcoin: URI or payment request</source>
+        <translation>Deschide un smartcoin: URI sau cerere de plată</translation>
     </message>
     <message>
         <source>%1 behind</source>
@@ -746,10 +746,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>dogecoin-core</name>
+    <name>smartcoin-core</name>
     <message>
-        <source>Dogecoin Core</source>
-        <translation>Dogecoin Core</translation>
+        <source>Smartcoin Core</source>
+        <translation>Smartcoin Core</translation>
     </message>
     <message>
         <source>Information</source>
