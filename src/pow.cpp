@@ -7,7 +7,6 @@
 #include "auxpow.h"
 #include "arith_uint256.h"
 #include "chain.h"
-#include "dogecoin.h"
 #include "primitives/block.h"
 #include "uint256.h"
 #include "util.h"
@@ -78,7 +77,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     int blockstogoback = params.DifficultyAdjustmentInterval();
     if ((pindexLast->nHeight+1) == params.DifficultyAdjustmentInterval())
         blockstogoback = params.DifficultyAdjustmentInterval() - 1;
-    else if ((pindexLast->nHeight) >= params.adjustmentIntervalForkheight)
+    else if ((pindexLast->nHeight) >= params.adjustmentIntervalForkHeight)
         blockstogoback = 4 * params.DifficultyAdjustmentInterval();
 
     // Go back by what we want to be 4 minutes of blocks
@@ -97,7 +96,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
 
     // Limit adjustment step
     int64_t nActualTimespan = pindexLast->GetBlockTime() - nFirstBlockTime;
-    if (pindexLast->nHeight >= params.adjustmentIntervalForkheight)
+    if (pindexLast->nHeight >= params.adjustmentIntervalForkHeight)
         nActualTimespan = (pindexLast->GetBlockTime() - nFirstBlockTime) / 4;
     if (nActualTimespan < params.nPowTargetTimespan / 4)
         nActualTimespan = params.nPowTargetTimespan / 4;
@@ -194,7 +193,7 @@ unsigned int DigiShield(const CBlockIndex* pindexLast, const CBlockHeader *pbloc
 
     int64_t nTargetSpacing = params.nPowTargetSpacing;
 
-    if (pindexLast->nHeight+1 >= params.targetSpacingForkHeight) {
+    if (pindexLast->nHeight+1 >= params.X11ForkHeight) {
         nTargetSpacing = 60 * 2; // switch to 2 minute blocks after block 300,000
     }
     else if (pindexLast->nHeight+1 >= params.fork2Height) {
@@ -284,7 +283,7 @@ unsigned int DarkGravityWave(const CBlockIndex* pindexLast, const CBlockHeader *
 			PastDifficultyAveragePrev = PastDifficultyAverage;
 		}
 
-		if(LastBlockTime > 0){
+		if(LastBlockTime > 0) {
 			int64_t Diff = (LastBlockTime - BlockReading->GetBlockTime());
 			nActualTimespan += Diff;
 		}
@@ -295,12 +294,12 @@ unsigned int DarkGravityWave(const CBlockIndex* pindexLast, const CBlockHeader *
 	}
 
 	CBigNum bnNew(PastDifficultyAverage);
-	int64_t _nTargetTimespan = CountBlocks * params.nPowTargetSpacing;
+	int64_t _nTargetTimespan = CountBlocks * 120;
 
-	if (nActualTimespan < _nTargetTimespan/3)
-		nActualTimespan = _nTargetTimespan/3;
-	if (nActualTimespan > _nTargetTimespan*3)
-		nActualTimespan = _nTargetTimespan*3;
+	if (nActualTimespan < _nTargetTimespan / 3)
+		nActualTimespan = _nTargetTimespan / 3;
+	if (nActualTimespan > _nTargetTimespan * 3)
+		nActualTimespan = _nTargetTimespan * 3;
 
 	// Retarget
 	bnNew *= nActualTimespan;
@@ -323,13 +322,13 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
 
     // Check range
     if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(params.powLimit)) {
-        LogPrintf("CheckProofOfWork: nBits: %08x != bnTarget: %08x\n", nBits, bnTarget.GetCompact());
+        if (fDebug) LogPrintf("CheckProofOfWork: nBits: %08x != bnTarget: %08x\n", nBits, bnTarget.GetCompact());
         return false;
     }
 
     // Check proof of work matches claimed amount
     if (UintToArith256(hash) > bnTarget) {
-        LogPrintf("CheckProofOfWork: GetPowHash(): %08x != bnTarget: %08x\n", UintToArith256(hash).GetCompact(), bnTarget.GetCompact());
+        if (fDebug) LogPrintf("CheckProofOfWork: GetPowHash(): %08x != bnTarget: %08x\n", UintToArith256(hash).GetCompact(), bnTarget.GetCompact());
         return false;
     }
 

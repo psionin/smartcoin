@@ -44,10 +44,10 @@ struct Params {
     int nMajorityRejectBlockOutdated;
     int nMajorityWindow;
     /** Smartcoin initial forks 2014-2015 */
-    int adjustmentIntervalForkheight;
+    int adjustmentIntervalForkHeight;
     int fork1Height;
     int fork2Height;
-    int targetSpacingForkHeight;
+    int X11ForkHeight;
     int fork3Height;
     int fork4Height;
     /** Block height and hash at which BIP34 becomes active */
@@ -85,6 +85,9 @@ struct Params {
     int32_t nAuxpowChainId;
     bool fStrictChainId;
     bool fAllowLegacyBlocks;
+
+    /** X11 fork */
+    bool mineX11;
 
     /** Height-aware consensus parameters */
     uint32_t nHeightEffective; // When these parameters come into use

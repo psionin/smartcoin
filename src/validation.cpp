@@ -13,7 +13,6 @@
 #include "consensus/consensus.h"
 #include "consensus/merkle.h"
 #include "consensus/validation.h"
-#include "dogecoin.h"
 #include "hash.h"
 #include "init.h"
 #include "policy/fees.h"
@@ -1204,6 +1203,75 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
     nSubsidy >>= halvings;
     return nSubsidy;
+}
+
+CAmount GetSmartcoinBlockSubsidy(int nHeight, const Consensus::Params& consensusParams, uint256 prevHash)
+{ /** Total SMC coins expected: around 30 million */
+    CAmount nSubsidy = 64 * COIN;
+    if (nHeight == 0) {
+        nSubsidy = 0 * COIN;
+    }
+    else if (nHeight == 1) { // Premine is 400,000
+        nSubsidy = 400000 * COIN;
+    }
+    else if (nHeight < 1000) { // Low reward for the first 1,000 blocks
+        nSubsidy = 1 * COIN;
+    }
+    else if (nHeight < consensusParams.fork2Height) { // 64 coins until block 200,000
+        nSubsidy = 64 * COIN;
+    }
+    else if (nHeight < consensusParams.fork3Height) { // 32 coins until block 300,000
+        nSubsidy = 32 * COIN;
+    }
+    else { // Then 16 coins with approx yearly halving thereafter
+        nSubsidy = 16 * COIN;
+        nSubsidy >>= nHeight / consensusParams.nSubsidyHalvingInterval;
+        if (nSubsidy < 0.25) { // 2020 version update: keep a minimum of 0.25 SMC per block
+            nSubsidy = 0.25 * COIN;
+        }
+    }
+    return nSubsidy;
+}
+
+CAmount GetSmartcoinMinRelayFee(const CTransaction& tx, unsigned int nBytes, bool fAllowFree)
+{
+    {
+        LOCK(mempool.cs);
+        uint256 hash = tx.GetHash();
+        double dPriorityDelta = 0;
+        CAmount nFeeDelta = 0;
+        mempool.ApplyDeltas(hash, dPriorityDelta, nFeeDelta);
+        if (dPriorityDelta > 0 || nFeeDelta > 0)
+            return 0;
+    }
+
+    CAmount nMinFee = ::minRelayTxFee.GetFee(nBytes);
+    nMinFee += GetSmartcoinDustFee(tx.vout, ::minRelayTxFee);
+
+    if (fAllowFree)
+    {
+        // There is a free transaction area in blocks created by most miners,
+        // * If we are relaying we allow transactions up to DEFAULT_BLOCK_PRIORITY_SIZE - 1000
+        //   to be considered to fall into this category. We don't want to encourage sending
+        //   multiple transactions instead of one big transaction to avoid fees.
+        if (nBytes < (DEFAULT_BLOCK_PRIORITY_SIZE - 1000))
+            nMinFee = 0;
+    }
+
+    if (!MoneyRange(nMinFee))
+        nMinFee = MAX_MONEY;
+    return nMinFee;
+}
+
+CAmount GetSmartcoinDustFee(const std::vector<CTxOut> &vout, CFeeRate &baseFeeRate) {
+    CAmount nFee = 0;
+
+    // To limit dust spam, add base fee for each output less than a COIN
+    BOOST_FOREACH(const CTxOut& txout, vout)
+        if (txout.IsDust(::minRelayTxFee))
+            nFee += baseFeeRate.GetFeePerK();
+
+    return nFee;
 }
 
 bool IsInitialBlockDownload()

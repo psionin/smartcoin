@@ -13,7 +13,7 @@
  * for both smartcoind and smartcoin-core, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Shibetoshi");
+const std::string CLIENT_NAME("Psitoshi");
 
 /**
  * Client version number

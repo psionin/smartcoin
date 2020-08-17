@@ -78,10 +78,10 @@ public:
 
         consensus.nCoinbaseMaturity = 15;
         consensus.nSubsidyHalvingInterval = 647800;
-        consensus.adjustmentIntervalForkheight = 15001; // interval * 4
+        consensus.adjustmentIntervalForkHeight = 15001; // interval * 4
         consensus.fork1Height = 35000; // KimotoGravityWell
         consensus.fork2Height = 200000; // nSubsidy 32, 30 second spacing, DigiShield
-        consensus.targetSpacingForkHeight = 289872; // 2 minute block spacing, X11
+        consensus.X11ForkHeight = 289872; // 2 minute block spacing, X11
         consensus.fork3Height = 300000; // nSubsidy 16
         consensus.fork4Height = 385000; // DarkGravityWave
 
@@ -126,7 +126,6 @@ public:
         // AuxPoW parameters
         consensus.nAuxpowChainId = 0x0062; // 98 - Josh Wise!
         consensus.fStrictChainId = false;
-        consensus.fAllowLegacyBlocks = true;
         consensus.nHeightEffective = 0;
 
         // Blocks 145000 - 371336 are Digishield without AuxPoW

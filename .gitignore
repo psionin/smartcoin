@@ -68,10 +68,10 @@ src/qt/test/moc*.cpp
 *.json.h
 *.raw.h
 
-# editor
+# VSCode editor
 .vscode
 
-# linux specific
+# Linux specific
 .directory
 
 # libtool object files
