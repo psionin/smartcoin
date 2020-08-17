@@ -68,11 +68,17 @@ src/qt/test/moc*.cpp
 *.json.h
 *.raw.h
 
-#libtool object files
+# editor
+.vscode
+
+# linux specific
+.directory
+
+# libtool object files
 *.lo
 *.la
 
-# Compilation and Qt preprocessor part
+# Compilation and Qt preprocessor
 *.qm
 Makefile
 smartcoin-qt
@@ -90,7 +96,7 @@ qrc_*.cpp
 .DS_Store
 build
 
-#lcov
+# lcov
 *.gcno
 *.gcda
 /*.info
@@ -98,7 +104,7 @@ test_bitcoin.coverage/
 total.coverage/
 coverage_percent.txt
 
-#build tests
+# build tests
 linux-coverage-build
 linux-build
 win32-build

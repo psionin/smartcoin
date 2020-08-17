@@ -44,8 +44,10 @@ struct Params {
     int nMajorityRejectBlockOutdated;
     int nMajorityWindow;
     /** Smartcoin initial forks 2014-2015 */
+    int adjustmentIntervalForkheight;
     int fork1Height;
     int fork2Height;
+    int targetSpacingForkHeight;
     int fork3Height;
     int fork4Height;
     /** Block height and hash at which BIP34 becomes active */
@@ -72,10 +74,9 @@ struct Params {
     int64_t nPowTargetTimespan;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
 
-    /** Smartcoin-specific parameters */
+    /** Dogecoin-specific parameters */
     bool fDigishieldDifficultyCalculation;
     bool fPowAllowDigishieldMinDifficultyBlocks; // Allow minimum difficulty blocks where a retarget would normally occur
-    bool fSimplifiedRewards; // Use block height derived rewards rather than previous block hash derived
 
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;

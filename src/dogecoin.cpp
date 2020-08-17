@@ -1,4 +1,4 @@
-// Copyright (c) 2015 The Smartcoin Core developers
+// Copyright (c) 2015 The Dogecoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,20 +17,15 @@
 // a retarget, so we need to handle minimum difficulty on all blocks.
 bool AllowDigishieldMinDifficultyForBlock(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
-    // check if the chain allows minimum difficulty blocks
+    // Check if the chain allows minimum difficulty blocks
     if (!params.fPowAllowMinDifficultyBlocks)
-        return false;
-
-    // check if the chain allows minimum difficulty blocks on recalc blocks
-    if (pindexLast->nHeight < 157500)
-    // if (!params.fPowAllowDigishieldMinDifficultyBlocks)
         return false;
 
     // Allow for a minimum block time if the elapsed time > 2*nTargetSpacing
     return (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2);
 }
 
-unsigned int CalculateSmartcoinNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params& params)
+unsigned int CalculateDogecoinNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params& params)
 {
     int nHeight = pindexLast->nHeight + 1;
     const int64_t retargetTimespan = params.nPowTargetTimespan;
@@ -103,7 +98,6 @@ bool CheckAuxPowProofOfWork(const CBlockHeader& block, const Consensus::Params& 
     }
 
     /* We have auxpow.  Check it.  */
-
     if (!block.IsAuxpow())
         return error("%s : auxpow on block with non-auxpow version", __func__);
 
@@ -131,12 +125,12 @@ CAmount GetSmartcoinBlockSubsidy(int nHeight, const Consensus::Params& consensus
         nSubsidy = 64 * COIN;
     }
     else if (nHeight < consensusParams.fork3Height) { // 32 coins until block 300,000
-        nSubsidy = (32 / ((nHeight + 400000) / 400000)) * COIN;
+        nSubsidy = 32 * COIN;
     }
     else { // Then 16 coins with approx yearly halving thereafter
         nSubsidy = 16 * COIN;
         nSubsidy >>= nHeight / consensusParams.nSubsidyHalvingInterval;
-        if (nSubsidy < 0.25) {
+        if (nSubsidy < 0.25) { // 2020 version update: keep a minimum of 0.25 SMC per block
             nSubsidy = 0.25 * COIN;
         }
     }

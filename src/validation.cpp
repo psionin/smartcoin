@@ -1160,7 +1160,7 @@ static bool ReadBlockOrHeader(T& block, const CDiskBlockPos& pos, const Consensu
     }
 
     // Check the header
-    if (!CheckAuxPowProofOfWork(block, consensusParams))
+    if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, consensusParams))
         return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
     return true;
@@ -2853,7 +2853,7 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool f
     // We don't have block height as this is called without context (i.e. without
     // knowing the previous block), but that's okay, as the checks done are permissive
     // (i.e. doesn't check work limit or whether AuxPoW is enabled)
-    if (fCheckPOW && !CheckAuxPowProofOfWork(block, Params().GetConsensus(0)))
+    if (fCheckPOW && !CheckProofOfWork(block.GetPoWHash(), block.nBits, Params().GetConsensus(0)))
         return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
 
     return true;
@@ -2938,7 +2938,7 @@ static bool CheckIndexAgainstCheckpoint(const CBlockIndex* pindexPrev, CValidati
 
 bool IsWitnessEnabled(const CBlockIndex* pindexPrev, const Consensus::Params& params)
 {
-    // Smartcoin: Disable SegWit
+    // Dogecoin: Disable SegWit
     return false;
     // LOCK(cs_main);
     // return (VersionBitsState(pindexPrev, params, Consensus::DEPLOYMENT_SEGWIT, versionbitscache) == THRESHOLD_ACTIVE);
@@ -3006,24 +3006,24 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     const Consensus::Params& consensusParams = Params().GetConsensus(nHeight);
 
     // Disallow legacy blocks after merge-mining start.
-    if (!consensusParams.fAllowLegacyBlocks
-        && block.IsLegacy())
+    if (!consensusParams.fAllowLegacyBlocks && block.IsLegacy())
         return state.DoS(100, error("%s : legacy block after auxpow start",
-                                    __func__),
+                __func__),
                          REJECT_INVALID, "late-legacy-block");
 
-    // Smartcoin: Disallow AuxPow blocks before it is activated.
+    // Dogecoin: Disallow AuxPow blocks before it is activated.
     // TODO: Remove this test, as checkpoints will enforce this for us now
     // NOTE: Previously this had its own fAllowAuxPoW flag, but that's always the opposite of fAllowLegacyBlocks
-    if (consensusParams.fAllowLegacyBlocks
-        && block.IsAuxpow())
+    if (consensusParams.fAllowLegacyBlocks && block.IsAuxpow())
         return state.DoS(100, error("%s : auxpow blocks are not allowed at height %d, parameters effective from %d",
-                                    __func__, pindexPrev->nHeight + 1, consensusParams.nHeightEffective),
+                __func__, pindexPrev->nHeight + 1, consensusParams.nHeightEffective),
                          REJECT_INVALID, "early-auxpow-block");
 
     // Check proof of work
-    if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams))
+    if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams)) {
+        LogPrintf("CheckPoW: block.nBits: %08x != GetNextWorkRequired: %08x\n", block.nBits, GetNextWorkRequired(pindexPrev, &block, consensusParams));
         return state.DoS(100, false, REJECT_INVALID, "bad-diffbits", false, "incorrect proof of work");
+    }
 
     // Check timestamp against prev
     if (block.GetBlockTime() <= pindexPrev->GetMedianTimePast())
@@ -3035,15 +3035,15 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 
     // Reject outdated version blocks when 95% (75% on testnet) of the network has upgraded:
     // check for version 2, 3 and 4 upgrades
-    // Smartcoin: Version 2 enforcement was never used
-    if((block.GetBaseVersion() < 3 && nHeight >= consensusParams.BIP66Height))
-            return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x)", block.GetBaseVersion()),
-                                 strprintf("rejected nVersion=0x%08x block", block.GetBaseVersion()));
+    // Dogecoin: Version 2 enforcement was never used
+    //if((block.GetBaseVersion() < 3 && nHeight >= consensusParams.BIP66Height))
+    //        return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x)", block.GetBaseVersion()),
+    //                             strprintf("rejected nVersion=0x%08x block", block.GetBaseVersion()));
 
-    // Smartcoin: Introduce supermajority rules for v4 blocks
-    if (block.GetBaseVersion() < 4 && IsSuperMajority(4, pindexPrev, consensusParams.nMajorityRejectBlockOutdated, consensusParams))
-        return state.Invalid(error("%s : rejected nVersion=3 block", __func__),
-                             REJECT_OBSOLETE, "bad-version");
+    // Dogecoin: Introduce supermajority rules for v4 blocks
+    //if (block.GetBaseVersion() < 4 && IsSuperMajority(4, pindexPrev, consensusParams.nMajorityRejectBlockOutdated, consensusParams))
+    //    return state.Invalid(error("%s : rejected nVersion=3 block", __func__),
+    //                         REJECT_OBSOLETE, "bad-version");
 
     return true;
 }

@@ -59,7 +59,6 @@ public:
     const Consensus::Params& GetConsensus(uint32_t nTargetHeight) const {
         return *(pConsensusRoot -> GetConsensus(nTargetHeight));
     }
-
     const CMessageHeader::MessageStartChars& MessageStart() const { return pchMessageStart; }
     const std::vector<unsigned char>& AlertKey() const { return vAlertPubKey; }
     int GetDefaultPort() const { return nDefaultPort; }
