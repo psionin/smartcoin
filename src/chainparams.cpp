@@ -182,26 +182,25 @@ public:
         fMineBlocksOnDemand = false;
 
         checkpointData = (CCheckpointData) {
-            {
-                {    100, uint256S("0x51e6152ac01691360850108d3acbfdb6bc72312a6d50e551424a745a7ddc28ec")},
-                {   1000, uint256S("0xd8d586d8e99ecdff7d9bcc412e1b8f301e2c5641768b537801e9a7f0619297d6")},
-                {  10000, uint256S("0x12b0fee6a4a6324a1c3a0f94bfc4cdc3c373a90d680209042dbb612b4349616a")},
-                { 100000, uint256S("0x0c0628dc3b5df07c22fff9ace256b83e9b6c8c7c664b49b2ab5d3b2e485efb7e")},
-                { 500000, uint256S("0x50bb03ea8bc032d627c4e2b24e913b822915c2a622ce4a4ae48d531fb2f746ff")},
-                {1000000, uint256S("0x3bcf5c1125fd5b01ed7106d064dc02c5a5662b16f37f8d29bf9259a722a8c6ba")},
-                {1500000, uint256S("0xb49e622f7a25b8281d1d5285fff910f260417dad864a1f4344eac675563d3743")},
-                {2000000, uint256S("0xe189dbd6d907239010d1153b4eba5592f32ef65d8898006ab5b6b9e114e0d7f3")},
-                {2500000, uint256S("0xbd9d26924f05f6daa7f0155f32828ec89e8e29cee9e7121b026a7a3552ac6131")},
-            }
+            boost::assign::map_list_of
+            (    100, uint256S("0x51e6152ac01691360850108d3acbfdb6bc72312a6d50e551424a745a7ddc28ec"))
+            (   1000, uint256S("0xd8d586d8e99ecdff7d9bcc412e1b8f301e2c5641768b537801e9a7f0619297d6"))
+            (  10000, uint256S("0x12b0fee6a4a6324a1c3a0f94bfc4cdc3c373a90d680209042dbb612b4349616a"))
+            ( 100000, uint256S("0x0c0628dc3b5df07c22fff9ace256b83e9b6c8c7c664b49b2ab5d3b2e485efb7e"))
+            ( 500000, uint256S("0x50bb03ea8bc032d627c4e2b24e913b822915c2a622ce4a4ae48d531fb2f746ff"))
+            (1000000, uint256S("0x3bcf5c1125fd5b01ed7106d064dc02c5a5662b16f37f8d29bf9259a722a8c6ba"))
+            (1500000, uint256S("0xb49e622f7a25b8281d1d5285fff910f260417dad864a1f4344eac675563d3743"))
+            (2000000, uint256S("0xe189dbd6d907239010d1153b4eba5592f32ef65d8898006ab5b6b9e114e0d7f3"))
+            (2500000, uint256S("0xb343373a54c719686ac59c3f004ad8c5cbe1e7b9bbb3e2bafc404a697530d2bb"))
         };
 
-        chainTxData = ChainTxData { // Smartcoin: To-do, update data
+        chainTxData = ChainTxData {
             // Data as of block 77e3f4a4bcb4a2c15e8015525e3d15b466f6c022f6ca82698f329edef7d9777e (height 2510150).
             // Tx estimate based on average of year 2018 (~27k transactions per day)
-            1544484077, // * UNIX timestamp of last checkpoint block
-            42797508,   // * total number of transactions between genesis and last checkpoint
+            1585966963, // * UNIX timestamp of last checkpoint block
+            2800000,    // * total number of transactions between genesis and last checkpoint
                         //   (the tx=... number in the SetBestChain debug.log lines)
-            0.3125      // * estimated number of transactions per second after checkpoint
+            0.0083      // * estimated number of transactions per second after checkpoint
         };
     }
 };
