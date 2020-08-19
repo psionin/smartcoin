@@ -4,7 +4,7 @@
 ![Smartcoin](http://smartcoin.cc/images/smartcoin2-196x196.png)
 
 ## What is Smartcoin?
-Smartcoin is a cryptocurrency like Bitcoin, using X11 as its proof of work (POW) algorithm. Dogecoin Core 1.14.2 code has been used as a base for the most recent Smartcoin update for much wow performance and stability.
+Smartcoin is a cryptocurrency like Bitcoin, using X11 as its proof of work (POW) algorithm. Dogecoin Core 1.14.2 code has been used as a base for the most recent Smartcoin update for much wow performance and stability. To-do: wallet build (error currently) and update tests.
 
 http://smartcoin.cc/
 
