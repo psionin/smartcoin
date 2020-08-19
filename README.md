@@ -1,5 +1,5 @@
-# Smartcoin Core
-==========================
+# SmartCoin 1.1 (August 2020)
+=============================
 
 ![Smartcoin](http://smartcoin.cc/images/smartcoin2-196x196.png)
 
