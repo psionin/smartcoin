@@ -1,10 +1,10 @@
 # SmartCoin 1.1 (August 2020)
-=============================
+***
 
 ![Smartcoin](http://smartcoin.cc/images/smartcoin2-196x196.png)
 
 ## What is Smartcoin?
-Smartcoin is a cryptocurrency like Bitcoin, using X11 as its proof of work (POW) algorithm. Dogecoin Core code has been used as a base for the most recent Smartcoin update for much wow performance and stability.
+Smartcoin is a cryptocurrency like Bitcoin, using X11 as its proof of work (POW) algorithm. Dogecoin Core 1.14.2 code has been used as a base for the most recent Smartcoin update for much wow performance and stability.
 
 http://smartcoin.cc/
 
@@ -38,16 +38,16 @@ About 30 million SMC are scheduled to be minted, most of them already made.
 
 The block reward schedule:
 
-Genesis Block           400,000 SMC
-Block 0,000,002 - 0,000,999:  1 SMC
-Block 0,001,000 - 0,199,999: 64 SMC
-Block 0,200,000 - 0,299,999: 32 SMC
-Block 0,300,000 - 0,562,799: 16 SMC
-Block 0,562,800 - 0,825,599:  8 SMC
-Block 0,825,600 - 1,088,399:  4 SMC
-Block 1,088,400 - 1,351,199:  2 SMC
-Block 1,351,199 - 1,613,999:  1 SMC
-............... - ......... x/2 SMC
+- Genesis Block           400,000 SMC
+- Block 0,000,002 - 0,000,999:  1 SMC
+- Block 0,001,000 - 0,199,999: 64 SMC
+- Block 0,200,000 - 0,299,999: 32 SMC
+- Block 0,300,000 - 0,562,799: 16 SMC
+- Block 0,562,800 - 0,825,599:  8 SMC
+- Block 0,825,600 - 1,088,399:  4 SMC
+- Block 1,088,400 - 1,351,199:  2 SMC
+- Block 1,351,199 - 1,613,999:  1 SMC
+- ............... - ......... x/2 SMC
 
 ### Wow plz make smartcoind/smartcoin-cli/smartcoin-qt
 
