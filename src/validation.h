@@ -19,7 +19,6 @@
 #include "versionbits.h"
 
 #include <algorithm>
-#include <cmath>
 #include <exception>
 #include <map>
 #include <set>
@@ -55,11 +54,11 @@ static const bool DEFAULT_WHITELISTRELAY = true;
 /** Default for DEFAULT_WHITELISTFORCERELAY. */
 static const bool DEFAULT_WHITELISTFORCERELAY = true;
 /** Default for -minrelaytxfee, minimum relay fee for transactions */
-static const unsigned int DEFAULT_MIN_RELAY_TX_FEE = pow(LIBRE, 2.0);
+static const unsigned int DEFAULT_MIN_RELAY_TX_FEE = BIT * BIT;
 //! -maxtxfee default
 static const CAmount DEFAULT_TRANSACTION_MAXFEE = CENT;
 //! Discourage users to set fees higher than this amount (in satoshis) per kB
-static const CAmount HIGH_TX_FEE_PER_KB = COIN;
+static const CAmount HIGH_TX_FEE_PER_KB = 10 * CENT;
 //! -maxtxfee will warn if called with a higher fee than this amount (in satoshis)
 static const CAmount HIGH_MAX_TX_FEE = 10 * HIGH_TX_FEE_PER_KB;
 /** Default for -limitancestorcount, max number of in-mempool ancestors */
