@@ -242,7 +242,7 @@
         <translation>Synchronisation avec le réseau…</translation>
     </message>
     <message>
-        <source>&amp;Wow</source>
+        <source>&amp;Overview</source>
         <translation>&amp;Vue d'ensemble</translation>
     </message>
     <message>
@@ -370,11 +370,11 @@
         <translation>Porte-monnaie</translation>
     </message>
     <message>
-        <source>&amp;Such Send</source>
+        <source>&amp;Send</source>
         <translation>&amp;Envoyer</translation>
     </message>
     <message>
-        <source>&amp;Much Receive</source>
+        <source>&amp;Receive</source>
         <translation>&amp;Recevoir</translation>
     </message>
     <message>

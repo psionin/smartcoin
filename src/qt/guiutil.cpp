@@ -95,8 +95,8 @@ QString dateTimeStr(qint64 nTime)
 
 QFont fixedPitchFont()
 {
-    QFont font("Cursive");
-    font.setFamily("Comic Sans MS");
+    QFont font("Regular");
+    font.setFamily("Helvetica");
     return font;
 }
 

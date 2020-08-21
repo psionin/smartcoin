@@ -82,7 +82,7 @@
         <translation>Синхронизација са мрежом у току...</translation>
     </message>
     <message>
-        <source>&amp;Wow</source>
+        <source>&amp;Overview</source>
         <translation>&amp;Општи преглед</translation>
     </message>
     <message>
@@ -142,7 +142,7 @@
         <translation>новчаник</translation>
     </message>
     <message>
-        <source>&amp;Such Send</source>
+        <source>&amp;Send</source>
         <translation>&amp;Пошаљи</translation>
     </message>
     <message>

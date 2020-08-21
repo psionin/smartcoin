@@ -242,7 +242,7 @@
         <translation>Synkroniserer med netværk…</translation>
     </message>
     <message>
-        <source>&amp;Wow</source>
+        <source>&amp;Overview</source>
         <translation>&amp;Oversigt</translation>
     </message>
     <message>
@@ -370,11 +370,11 @@
         <translation>Tegnebog</translation>
     </message>
     <message>
-        <source>&amp;Such Send</source>
-        <translation>&amp;Such Send</translation>
+        <source>&amp;Send</source>
+        <translation>&amp;Send</translation>
     </message>
     <message>
-        <source>&amp;Much Receive</source>
+        <source>&amp;Receive</source>
         <translation>&amp;Modtag</translation>
     </message>
     <message>

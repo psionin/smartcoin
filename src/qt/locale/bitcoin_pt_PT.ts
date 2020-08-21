@@ -218,7 +218,7 @@
         <translation>A sincronizar com a rede...</translation>
     </message>
     <message>
-        <source>&amp;Wow</source>
+        <source>&amp;Overview</source>
         <translation>&amp;Resumo</translation>
     </message>
     <message>
@@ -342,11 +342,11 @@
         <translation>Carteira</translation>
     </message>
     <message>
-        <source>&amp;Such Send</source>
+        <source>&amp;Send</source>
         <translation>&amp;Enviar</translation>
     </message>
     <message>
-        <source>&amp;Much Receive</source>
+        <source>&amp;Receive</source>
         <translation>&amp;Receber</translation>
     </message>
     <message>

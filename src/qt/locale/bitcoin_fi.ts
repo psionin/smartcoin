@@ -86,7 +86,7 @@
         <translation>Synkronoidaan verkon kanssa...</translation>
     </message>
     <message>
-        <source>&amp;Wow</source>
+        <source>&amp;Overview</source>
         <translation>&amp;Yleisnäkymä</translation>
     </message>
     <message>
@@ -198,11 +198,11 @@
         <translation>Lompakko</translation>
     </message>
     <message>
-        <source>&amp;Such Send</source>
+        <source>&amp;Send</source>
         <translation>&amp;Lähetä</translation>
     </message>
     <message>
-        <source>&amp;Much Receive</source>
+        <source>&amp;Receive</source>
         <translation>&amp;Vastaanota</translation>
     </message>
     <message>

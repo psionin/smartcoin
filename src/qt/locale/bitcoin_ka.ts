@@ -74,7 +74,7 @@
         <translation>ქსელთან სინქრონიზება...</translation>
     </message>
     <message>
-        <source>&amp;Wow</source>
+        <source>&amp;Overview</source>
         <translation>მიმ&amp;ოხილვა</translation>
     </message>
     <message>
@@ -174,11 +174,11 @@
         <translation>საფულე</translation>
     </message>
     <message>
-        <source>&amp;Such Send</source>
+        <source>&amp;Send</source>
         <translation>&amp;გაგზავნა</translation>
     </message>
     <message>
-        <source>&amp;Much Receive</source>
+        <source>&amp;Receive</source>
         <translation>&amp;მიღება</translation>
     </message>
     <message>

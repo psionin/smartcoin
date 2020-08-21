@@ -86,7 +86,7 @@
         <translation>Szinkronizálás a hálózattal...</translation>
     </message>
     <message>
-        <source>&amp;Wow</source>
+        <source>&amp;Overview</source>
         <translation>&amp;Áttekintés</translation>
     </message>
     <message>
@@ -190,11 +190,11 @@
         <translation>Tárca</translation>
     </message>
     <message>
-        <source>&amp;Such Send</source>
+        <source>&amp;Send</source>
         <translation>&amp;Küldés</translation>
     </message>
     <message>
-        <source>&amp;Much Receive</source>
+        <source>&amp;Receive</source>
         <translation>&amp;Fogadás</translation>
     </message>
     <message>

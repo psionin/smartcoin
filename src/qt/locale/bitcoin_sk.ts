@@ -242,7 +242,7 @@
         <translation>Synchronizácia so sieťou...</translation>
     </message>
     <message>
-        <source>&amp;Wow</source>
+        <source>&amp;Overview</source>
         <translation>&amp;Prehľad</translation>
     </message>
     <message>
@@ -370,11 +370,11 @@
         <translation>Peňaženka</translation>
     </message>
     <message>
-        <source>&amp;Such Send</source>
+        <source>&amp;Send</source>
         <translation>&amp;Odoslať</translation>
     </message>
     <message>
-        <source>&amp;Much Receive</source>
+        <source>&amp;Receive</source>
         <translation>&amp;Prijať</translation>
     </message>
     <message>

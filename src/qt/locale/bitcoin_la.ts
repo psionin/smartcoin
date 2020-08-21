@@ -62,7 +62,7 @@
         <translation>Synchronizans cum rete...</translation>
     </message>
     <message>
-        <source>&amp;Wow</source>
+        <source>&amp;Overview</source>
         <translation>&amp;Summarium</translation>
     </message>
     <message>
@@ -146,11 +146,11 @@
         <translation>Cassidile</translation>
     </message>
     <message>
-        <source>&amp;Such Send</source>
+        <source>&amp;Send</source>
         <translation>&amp;Mitte</translation>
     </message>
     <message>
-        <source>&amp;Much Receive</source>
+        <source>&amp;Receive</source>
         <translation>&amp;Accipe</translation>
     </message>
     <message>

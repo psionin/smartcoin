@@ -242,7 +242,7 @@
         <translation>正在与网络同步...</translation>
     </message>
     <message>
-        <source>&amp;Wow</source>
+        <source>&amp;Overview</source>
         <translation>概况(&amp;O)</translation>
     </message>
     <message>
@@ -366,11 +366,11 @@
         <translation>钱包</translation>
     </message>
     <message>
-        <source>&amp;Such Send</source>
+        <source>&amp;Send</source>
         <translation>发送(&amp;S)</translation>
     </message>
     <message>
-        <source>&amp;Much Receive</source>
+        <source>&amp;Receive</source>
         <translation>接收(&amp;R)</translation>
     </message>
     <message>

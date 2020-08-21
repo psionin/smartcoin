@@ -242,7 +242,7 @@
         <translation>Синхронизация с сетью...</translation>
     </message>
     <message>
-        <source>&amp;Wow</source>
+        <source>&amp;Overview</source>
         <translation>&amp;Обзор</translation>
     </message>
     <message>
@@ -370,11 +370,11 @@
         <translation>Бумажник</translation>
     </message>
     <message>
-        <source>&amp;Such Send</source>
+        <source>&amp;Send</source>
         <translation>&amp;Отправить</translation>
     </message>
     <message>
-        <source>&amp;Much Receive</source>
+        <source>&amp;Receive</source>
         <translation>&amp;Получить</translation>
     </message>
     <message>

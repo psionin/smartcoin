@@ -238,7 +238,7 @@
         <translation>Sincronizzazione con la rete in corso...</translation>
     </message>
     <message>
-        <source>&amp;Wow</source>
+        <source>&amp;Overview</source>
         <translation>&amp;Sintesi</translation>
     </message>
     <message>
@@ -350,11 +350,11 @@
         <translation>Portamonete</translation>
     </message>
     <message>
-        <source>&amp;Such Send</source>
+        <source>&amp;Send</source>
         <translation>&amp;Invia</translation>
     </message>
     <message>
-        <source>&amp;Much Receive</source>
+        <source>&amp;Receive</source>
         <translation>&amp;Ricevi</translation>
     </message>
     <message>
