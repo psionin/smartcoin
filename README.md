@@ -8,8 +8,8 @@ Smartcoin is a cryptocurrency like Bitcoin, using X11 as its proof of work (POW)
 
 http://smartcoin.cc/
 
-## License – Much license
-Smartcoin Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
+## License
+Smartcoin is released under the terms of the MIT license. See [COPYING](COPYING) for more
 information or see https://opensource.org/licenses/MIT.
 
 ## Development and contributions
