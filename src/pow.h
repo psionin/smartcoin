@@ -9,6 +9,7 @@
 #include "consensus/params.h"
 #include <stdint.h>
 #include "bignum.h"
+#include "cmath"
 
 class CBlockHeader;
 class CBlockIndex;
