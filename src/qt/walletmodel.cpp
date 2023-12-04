@@ -24,6 +24,8 @@
 
 #include <stdint.h>
 
+#include <boost/bind.hpp>
+
 #include <QDebug>
 #include <QSet>
 #include <QTimer>

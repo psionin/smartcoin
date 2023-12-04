@@ -47,6 +47,7 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/math/distributions/poisson.hpp>
 #include <boost/thread.hpp>
+#include <boost/bind.hpp>
 
 #if defined(NDEBUG)
 # error "Smartcoin cannot be compiled without assertions."
