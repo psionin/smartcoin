@@ -60,6 +60,14 @@ public:
     friend bool operator<=(const CFeeRate& a, const CFeeRate& b) { return a.nSatoshisPerK <= b.nSatoshisPerK; }
     friend bool operator>=(const CFeeRate& a, const CFeeRate& b) { return a.nSatoshisPerK >= b.nSatoshisPerK; }
     CFeeRate& operator+=(const CFeeRate& a) { nSatoshisPerK += a.nSatoshisPerK; return *this; }
+    CFeeRate& operator=(const CFeeRate& other) {
+        // guard against self-assignment
+        if (this != &other) {
+            // copy fields from 'other' to 'this'
+            this->nSatoshisPerK = other.nSatoshisPerK;
+        }
+        return *this;
+    }
     std::string ToString() const;
 
     ADD_SERIALIZE_METHODS;

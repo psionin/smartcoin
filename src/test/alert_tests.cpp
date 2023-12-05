@@ -193,6 +193,4 @@ BOOST_AUTO_TEST_CASE(AlertNotify)
     SetMockTime(0);
 }
 
-static bool falseFunc() { return false; }
-
 BOOST_AUTO_TEST_SUITE_END()
