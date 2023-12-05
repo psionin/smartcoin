@@ -15,13 +15,15 @@
 
 #include <univalue.h>
 
-#include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/signals2/signal.hpp>
 #include <boost/thread.hpp>
 #include <boost/algorithm/string/case_conv.hpp> // for to_upper()
+
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
 
 #include <memory> // for unique_ptr
 #include <unordered_map>

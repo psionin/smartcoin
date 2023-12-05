@@ -7,8 +7,10 @@
 #include "reverselock.h"
 
 #include <assert.h>
-#include <boost/bind.hpp>
 #include <utility>
+
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
 
 CScheduler::CScheduler() : nThreadsServicingQueue(0), stopRequested(false), stopWhenEmpty(false)
 {

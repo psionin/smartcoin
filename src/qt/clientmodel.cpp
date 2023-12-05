@@ -21,7 +21,8 @@
 
 #include <stdint.h>
 
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
 
 #include <QDebug>
 #include <QTimer>
