@@ -439,11 +439,6 @@
         <translation type="unfinished">Sign messages with your Smartcoin addresses to prove you own them</translation>
     </message>
     <message>
-        <location line="-510"/>
-        <source>Send coins to a Smartcoin address</source>
-        <translation>Send coins to a Smartcoin address</translation>
-    </message>
-    <message>
         <location line="+1"/>
         <source>Verify messages to ensure they were signed with specified Smartcoin addresses</source>
         <translation type="unfinished">Verify messages to ensure they were signed with specified Smartcoin addresses</translation>
@@ -472,11 +467,6 @@
         <location line="+516"/>
         <source>Smartcoin</source>
         <translation>Smartcoin</translation>
-    </message>
-    <message>
-        <location line="-741"/>
-        <source>Wallet</source>
-        <translation>Wallet</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -542,11 +532,6 @@
         </translation>
     </message>
     <message>
-        <location line="+0"/>
-        <source>Click to disable network activity.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location line="+2"/>
         <source>Network activity disabled.</source>
         <translation type="unfinished"></translation>
@@ -560,14 +545,6 @@
         <location line="+27"/>
         <source>Syncing Headers (%1%)...</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message numerus="yes">
-        <location line="+356"/>
-        <source>%n active connection(s) to Smartcoin network</source>
-        <translation>
-            <numerusform>%n active connection to Smartcoin network</numerusform>
-            <numerusform>%n active connections to Smartcoin network</numerusform>
-        </translation>
     </message>
     <message>
         <location line="+5"/>
@@ -623,11 +600,6 @@
         <translation type="unfinished">Transactions after this will not yet be visible.</translation>
     </message>
     <message>
-        <location line="+13"/>
-        <source>Smartcoin</source>
-        <translation type="unfinished">Smartcoin</translation>
-    </message>
-    <message>
         <location line="+14"/>
         <source>Error</source>
         <translation type="unfinished">Error</translation>
@@ -641,31 +613,6 @@
         <location line="+3"/>
         <source>Information</source>
         <translation>Information</translation>
-    </message>
-    <message>
-        <location line="-78"/>
-        <source>Up to date</source>
-        <translation>Up to date</translation>
-    </message>
-    <message>
-        <location line="-440"/>
-        <source>Show the %1 help message to get a list with possible Smartcoin command-line options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+199"/>
-        <source>%1 client</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+227"/>
-        <source>Connecting to peers...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+38"/>
-        <source>Catching up...</source>
-        <translation>Catching up...</translation>
     </message>
     <message>
         <location line="+145"/>

@@ -87,7 +87,6 @@ public:
 
         consensus.BIP34Height = 1000000;
         consensus.BIP34Hash = uint256S("3bcf5c1125fd5b01ed7106d064dc02c5a5662b16f37f8d29bf9259a722a8c6ba");
-        //consensus.BIP65Height = 1032483; // Not enabled in Dogecoin yet
         //consensus.BIP66Height = 1034383; // 80d1364201e5df97e696c03bdd24dc885e8617b9de51e453c10a4f629b1e797a - this is the last block that could be v2, 1900 blocks past the last v2 block
 
         consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20;

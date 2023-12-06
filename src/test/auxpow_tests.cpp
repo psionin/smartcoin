@@ -321,8 +321,7 @@ BOOST_AUTO_TEST_CASE(check_auxpow)
  * @param ok Whether the block should be ok for PoW.
  * @param nBits Use this as difficulty if specified.
  */
-static void
-mineBlock(CBlockHeader& block, bool ok, int nBits = -1)
+/* static void mineBlock(CBlockHeader& block, bool ok, int nBits = -1)
 {
     if (nBits == -1)
         nBits = block.nBits;
@@ -343,7 +342,7 @@ mineBlock(CBlockHeader& block, bool ok, int nBits = -1)
         BOOST_CHECK(CheckProofOfWork(block.GetPoWHash(), nBits, Params().GetConsensus(0)));
     else
         BOOST_CHECK(!CheckProofOfWork(block.GetPoWHash(), nBits, Params().GetConsensus(0)));
-}
+} */
 
 /* ************************************************************************** */
 

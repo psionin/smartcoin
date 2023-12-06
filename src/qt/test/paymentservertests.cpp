@@ -33,8 +33,7 @@ X509 *parse_b64der_cert(const char* cert_data)
 //
 // Test payment request handling
 //
-
-static SendCoinsRecipient handleRequest(PaymentServer* server, std::vector<unsigned char>& data)
+/* static SendCoinsRecipient handleRequest(PaymentServer* server, std::vector<unsigned char>& data)
 {
     RecipientCatcher sigCatcher;
     QObject::connect(server, SIGNAL(receivedPaymentRequest(SendCoinsRecipient)),
@@ -60,7 +59,7 @@ static SendCoinsRecipient handleRequest(PaymentServer* server, std::vector<unsig
 
     // Return results from sigCatcher
     return sigCatcher.recipient;
-}
+} */
 
 void PaymentServerTests::paymentServerTests()
 {
