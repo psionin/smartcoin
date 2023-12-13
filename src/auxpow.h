@@ -219,7 +219,7 @@ public:
    * can be "mined" to make it valid.
    * @param header The header to set the auxpow on.
    */
-  static void initAuxPow(CBlockHeader& header);
+  //static void initAuxPow(CBlockHeader& header);
 
 };
 

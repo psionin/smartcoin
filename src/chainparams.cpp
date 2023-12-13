@@ -6,6 +6,7 @@
 #include "chainparams.h"
 #include "chainparamsseeds.h"
 #include "consensus/merkle.h"
+#include "pow.h"
 
 #include "tinyformat.h"
 #include "util.h"
@@ -49,8 +50,8 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "5 reasons Big Block of Cheese Day Part IV could be a very bad idea";
-    const CScript genesisOutputScript = CScript() << 0x0 << OP_CHECKSIG;
+    const char* pszTimestamp = "all your coin are belong to us";
+    const CScript genesisOutputScript = CScript() << ParseHex("040181c26fb0c5d0f78095caa682fb16bbbe861694ae0fc0d09fb6afbaf74a04bbfb588195261042fd01d5422fe3bb23ad0fd7f4d75aef7adceef797fa60ef53a0") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 
@@ -87,7 +88,7 @@ public:
 
         consensus.BIP34Height = 1000000;
         consensus.BIP34Hash = uint256S("3bcf5c1125fd5b01ed7106d064dc02c5a5662b16f37f8d29bf9259a722a8c6ba");
-        //consensus.BIP66Height = 1034383; // 80d1364201e5df97e696c03bdd24dc885e8617b9de51e453c10a4f629b1e797a - this is the last block that could be v2, 1900 blocks past the last v2 block
+        consensus.BIP66Height = 1034383; // 80d1364201e5df97e696c03bdd24dc885e8617b9de51e453c10a4f629b1e797a - this is the last block that could be v2, 1900 blocks past the last v2 block
 
         consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20;
         consensus.nPowTargetTimespan = 60 * 40; // initial setting: 40 minutes
@@ -128,21 +129,21 @@ public:
         consensus.nHeightEffective = 0;
 
         // Blocks 145000 - 371336 are Digishield without AuxPoW
-        //digishieldConsensus = consensus;
-        //digishieldConsensus.nHeightEffective = 145000;
-        //digishieldConsensus.fDigishieldDifficultyCalculation = true;
-        //digishieldConsensus.nPowTargetTimespan = 60; // post-digishield: 1 minute
-        //digishieldConsensus.nCoinbaseMaturity = 240;
+        digishieldConsensus = consensus;
+        digishieldConsensus.nHeightEffective = 145000;
+        digishieldConsensus.fDigishieldDifficultyCalculation = true;
+        digishieldConsensus.nPowTargetTimespan = 60; // post-digishield: 1 minute
+        digishieldConsensus.nCoinbaseMaturity = 240;
 
         // Blocks 371337+ are AuxPoW
-        //auxpowConsensus = digishieldConsensus;
-        //auxpowConsensus.nHeightEffective = 371337;
-        //auxpowConsensus.fAllowLegacyBlocks = false;
+        auxpowConsensus = digishieldConsensus;
+        auxpowConsensus.nHeightEffective = 371337;
+        auxpowConsensus.fAllowLegacyBlocks = false;
 
         // Assemble the binary search tree of consensus parameters
-        pConsensusRoot = &consensus;
-        //digishieldConsensus.pLeft = &consensus;
-        //digishieldConsensus.pRight = &auxpowConsensus;
+        digishieldConsensus.pLeft = &consensus;
+        digishieldConsensus.pRight = &auxpowConsensus;
+        pConsensusRoot = &digishieldConsensus;
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -153,7 +154,7 @@ public:
         pchMessageStart[1] = 0xfa;
         pchMessageStart[2] = 0xce;
         pchMessageStart[3] = 0xd0;
-        vAlertPubKey = ParseHex("04d4da7a5dae4db797d9b0644d57a5cd50e05a70f36091cd62e2fc41c98ded06340be5a43a35e185690cd9cde5d72da8f6d065b499b06f51dcfba14aad859f443b");
+        vAlertPubKey = ParseHex("04dc804acbda8a8e6ca38aa2678fc46b4dfcfc174b68b201c219f5abb5e173cb845fd7f6769205da30f9517d3ef4d289e631c020c07167aadd25defe1e1236203b");
         nDefaultPort = 58585;
         nPruneAfterHeight = 100000;
 
@@ -161,8 +162,8 @@ public:
         consensus.hashGenesisBlock = genesis.GetHash();
         //digishieldConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
         //auxpowConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
-        assert(consensus.hashGenesisBlock == uint256S("0x142d2acd2480363e89fad37be56ff3b8993dd8da2be2525d75b02e202b0467a7"));
-        assert(genesis.hashMerkleRoot == uint256S("0xbc7cd78fd30e1ec47e66da50b6eedbaec8d95d01e68f58cb0b2c5e83e9cb8dd3"));
+        //assert(consensus.hashGenesisBlock == uint256S("0x142d2acd2480363e89fad37be56ff3b8993dd8da2be2525d75b02e202b0467a7"));
+        //assert(genesis.hashMerkleRoot == uint256S("0xbc7cd78fd30e1ec47e66da50b6eedbaec8d95d01e68f58cb0b2c5e83e9cb8dd3"));
 
         // Note that of those with the service bits flag, most only support a subset of possible options
         //vSeeds.push_back(CDNSSeedData("multidoge.org", "seed.multidoge.org", true));
@@ -178,7 +179,7 @@ public:
         fMiningRequiresPeers = true;
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
-        fMineBlocksOnDemand = false;
+        fMineBlocksOnDemand = true;
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
@@ -205,8 +206,8 @@ public:
 };
 static CMainParams mainParams;
 
-/**
- * Testnet (v3)
+/*
+ * Testnet
  */
 class CTestNetParams : public CChainParams {
 private:
@@ -216,8 +217,6 @@ private:
 public:
     CTestNetParams() {
         strNetworkID = "test";
-
-        // Blocks 0 - 144999 are pre-Digishield
         consensus.nHeightEffective = 0;
         consensus.nPowTargetTimespan = 4 * 60 * 60; // pre-digishield: 4 hours
         consensus.fDigishieldDifficultyCalculation = false;
@@ -228,10 +227,15 @@ public:
         consensus.nMajorityEnforceBlockUpgrade = 501;
         consensus.nMajorityRejectBlockOutdated = 750;
         consensus.nMajorityWindow = 1000;
+        consensus.fork1Height = 35000; // KimotoGravityWell
+        consensus.fork2Height = 200000; // nSubsidy 32, 30 second spacing, DigiShield
+        consensus.X11ForkHeight = 289872; // 2 minute block spacing, X11
+        consensus.fork3Height = 300000; // nSubsidy 16
+        consensus.fork4Height = 385000; // DarkGravityWave
         // BIP34 is never enforced in Smartcoin v2 blocks, so we enforce from v3
         consensus.BIP34Height = 708658;
         consensus.BIP34Hash = uint256S("0x21b8b97dcdb94caa67c7f8f6dbf22e61e0cfe0e46e1fff3528b22864659e9b38");
-        // consensus.BIP65Height = 581885; // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
+        consensus.BIP65Height = 581885; // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         consensus.BIP66Height = 708658; // 21b8b97dcdb94caa67c7f8f6dbf22e61e0cfe0e46e1fff3528b22864659e9b38 - this is the last block that could be v2, 1900 blocks past the last v2 block
         consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20;
         consensus.nPowTargetTimespan = 4 * 60 * 60; // pre-digishield: 4 hours
@@ -263,7 +267,7 @@ public:
         // AuxPoW parameters
         consensus.nAuxpowChainId = 0x0062; // 98 - Josh Wise!
         consensus.fStrictChainId = false;
-        consensus.nHeightEffective = 0;
+        consensus.nHeightEffective = 1000;
         consensus.fAllowLegacyBlocks = true;
 
         // Blocks 145000 - 157499 are Digishield without minimum difficulty on all blocks
@@ -296,22 +300,38 @@ public:
         pchMessageStart[1] = 0xc1;
         pchMessageStart[2] = 0xb7;
         pchMessageStart[3] = 0xdc;
-        vAlertPubKey = ParseHex("042756726da3c7ef515d89212ee1705023d14be389e25fe15611585661b9a20021908b2b80a3c7200a0139dd2b26946606aab0eef9aa7689a6dc2c7eee237fa834");
-        nDefaultPort = 44556;
+        vAlertPubKey = ParseHex("040181c26fb0c5d0f78095caa682fb16bbbe861694ae0fc0d09fb6afbaf74a04bbfb588195261042fd01d5422fe3bb23ad0fd7f4d75aef7adceef797fa60ef53a0");
+        nDefaultPort = 8585;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1391503289, 997879, 0x1e0ffff0, 1, 88 * COIN);
+        genesis = CreateGenesisBlock(1702203438, 43707600, 0x1e0ffff0, 1, 10000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        digishieldConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
+        //digishieldConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
         minDifficultyConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
-        auxpowConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
-        //assert(consensus.hashGenesisBlock == uint256S("0xbb0a78264637406b6360aad926284d544d7049f45189db5664f3c4d07350559e"));
-        //assert(genesis.hashMerkleRoot == uint256S("0x5b2a3f53f605d62c53e62932dac6925e3d74afa5a4b459745c36d42d0ed26a69"));
+        //auxpowConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
+        // print out the genesis block hash
+        std::cout << "Genesis Block Hash: " << consensus.hashGenesisBlock.ToString() << std::endl;
+        std::cout << "Merkle Root Hash: " << genesis.hashMerkleRoot.ToString() << std::endl;
+        assert(consensus.hashGenesisBlock == uint256S("000000c7dc5b9e53827fd5920feab91fde1ed9b398e16f35fcb95d8056c574ed"));
+        assert(genesis.hashMerkleRoot == uint256S("b0a268fd73bcfb1d3d7a798c941a7fe7377054675ab626d8f2564742d75a4c93"));
+
+        std::string targetHash = "000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+        if (genesis.GetHash().ToString() > targetHash)
+        {
+            std::cout << "Recalculating params for genesis block..." << std::endl;
+            std::cout << "Old genesis nonce: " << genesis.nNonce << std::endl;
+            std::cout << "Old genesis hash: " << genesis.GetHash().ToString() << std::endl;
+            std::cout << "Old genesis PoW hash: " << genesis.GetPoWHash().ToString() << std::endl;
+            // iterate nonce and check hash until it is smaller than the target
+            for (genesis.nNonce = 0; genesis.GetHash().ToString() > targetHash; genesis.nNonce++) { }
+            std::cout << "New genesis nonce: " << genesis.nNonce << std::endl;
+            std::cout << "New genesis hash: " << genesis.GetHash().ToString() << std::endl;
+        }
 
         vFixedSeeds.clear();
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
-        vSeeds.push_back(CDNSSeedData("jrn.me.uk", "testseed.jrn.me.uk"));
+        //vSeeds.push_back(CDNSSeedData("jrn.me.uk", "testseed.jrn.me.uk"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,113); // 0x71
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196); // 0xc4
@@ -319,16 +339,16 @@ public:
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xcf).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
-        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
+        //vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
 
-        fMiningRequiresPeers = true;
+        fMiningRequiresPeers = false;
         fDefaultConsistencyChecks = false;
         fRequireStandard = false;
         fMineBlocksOnDemand = false;
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
-            ( 0, uint256S("0xbb0a78264637406b6360aad926284d544d7049f45189db5664f3c4d07350559e"))
+            ( 1000, uint256S("0xbb0a78264637406b6360aad926284d544d7049f45189db5664f3c4d07350559e"))
             ( 483173, uint256S("0xa804201ca0aceb7e937ef7a3c613a9b7589245b10cc095148c4ce4965b0b73b5"))
             ( 591117, uint256S("0x5f6b93b2c28cedf32467d900369b8be6700f0649388a7dbfd3ebd4a01b1ffad8"))
             ( 658924, uint256S("0xed6c8324d9a77195ee080f225a0fca6346495e08ded99bcda47a8eea5a8a620b"))
@@ -468,10 +488,10 @@ const CChainParams &Params() {
 }
 
 const Consensus::Params *Consensus::Params::GetConsensus(uint32_t nTargetHeight) const {
-    if (nTargetHeight < this -> nHeightEffective && this -> pLeft != NULL) {
-        return this -> pLeft -> GetConsensus(nTargetHeight);
-    } else if (nTargetHeight > this -> nHeightEffective && this -> pRight != NULL) {
-        const Consensus::Params *pCandidate = this -> pRight -> GetConsensus(nTargetHeight);
+    if (nTargetHeight < this->nHeightEffective && this->pLeft != NULL) {
+        return this->pLeft -> GetConsensus(nTargetHeight);
+    } else if (nTargetHeight > this->nHeightEffective && this->pRight != NULL) {
+        const Consensus::Params *pCandidate = this->pRight -> GetConsensus(nTargetHeight);
         if (pCandidate->nHeightEffective <= nTargetHeight) {
             return pCandidate;
         }

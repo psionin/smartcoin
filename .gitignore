@@ -121,3 +121,5 @@ contrib/devtools/split-debug.sh
 configure.sh
 make.err
 
+db-4.8.30.NC/
+db4/

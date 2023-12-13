@@ -181,7 +181,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     QFont::insertSubstitution("Comic Sans MS", "Comic Neue");
 
     // Smartcoin: Specify Comic Sans as new font.
-    QFont newFont("Comic Sans MS", 10);
+    QFont newFont("Ubuntu", 10);
 
     // Smartcoin: Set new application font
     QApplication::setFont(newFont);
