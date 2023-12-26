@@ -255,9 +255,11 @@ bool LogAcceptCategory(const char* category)
         const set<string>& setCategories = *ptrCategory.get();
 
         // if not debugging everything and not debugging specific category, LogPrint does nothing.
-        if (setCategories.count(string("")) == 0 &&
+        if ((setCategories.count(string("")) == 0 &&
             setCategories.count(string("1")) == 0 &&
-            setCategories.count(string(category)) == 0)
+            setCategories.count(string("all")) == 0 &&
+            setCategories.count(string(category)) == 0) ||
+            category == "libevent")
             return false;
     }
     return true;
@@ -325,7 +327,6 @@ int LogPrintStr(const std::string &str)
                 if (freopen(pathDebug.string().c_str(),"a",fileout) != NULL)
                     setbuf(fileout, NULL); // unbuffered
             }
-
             ret = FileWriteStr(strTimestamped, fileout);
         }
     }

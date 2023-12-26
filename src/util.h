@@ -75,7 +75,13 @@ int LogPrintStr(const std::string &str);
 
 #define LogPrint(category, ...) do { \
     if (LogAcceptCategory((category))) { \
-        LogPrintStr(tfm::format(__VA_ARGS__)); \
+        const char* category_cstr = (category); \
+        if (category_cstr == nullptr) { \
+            category_cstr = "null"; \
+        } \
+        std::string category_str = category_cstr; \
+        std::string log_msg = tfm::format(__VA_ARGS__); \
+        LogPrintStr("[" + category_str + "] " + log_msg); \
     } \
 } while(0)
 

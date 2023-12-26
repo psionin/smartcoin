@@ -161,8 +161,8 @@ void DebugMessageHandler(QtMsgType type, const char *msg)
 void DebugMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString &msg)
 {
     Q_UNUSED(context);
-    const char *category = (type == QtDebugMsg) ? "qt" : NULL;
-    LogPrint(category, "GUI: %s\n", msg.toStdString());
+    //const char *category = (type == QtDebugMsg) ? "qt" : NULL; // used to pass this to LogPrint instead, for the category, but then 'null' shows up as the category in the log
+    LogPrint("qt", "GUI: %s\n", msg.toStdString());
 }
 #endif
 
