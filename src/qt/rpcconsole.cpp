@@ -751,12 +751,12 @@ void RPCConsole::message(int category, const QString &message, bool html)
     QString out;
     out += "<table><tr><td class=\"time\" width=\"65\">" + timeString + "</td>";
     out += "<td class=\"icon\" width=\"32\"><img src=\"" + categoryClass(category) + "\"></td>";
-    out += "<td class=\"message " + categoryClass(category) + "\" valign=\"middle\">";
+    out += "<td class=\"message " + categoryClass(category) + "\" valign=\"middle\"><pre style=\"white-space: pre-wrap;\">";
     if(html)
         out += message;
     else
         out += GUIUtil::HtmlEscape(message, false);
-    out += "</td></tr></table>";
+    out += "</pre></td></tr></table>"; // Close the <pre> tag
     ui->messagesWidget->append(out);
 }
 

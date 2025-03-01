@@ -50,8 +50,8 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "all your coin are belong to us";
-    const CScript genesisOutputScript = CScript() << ParseHex("040181c26fb0c5d0f78095caa682fb16bbbe861694ae0fc0d09fb6afbaf74a04bbfb588195261042fd01d5422fe3bb23ad0fd7f4d75aef7adceef797fa60ef53a0") << OP_CHECKSIG;
+    const char* pszTimestamp = "5 reasons Big Block of Cheese Day Part IV could be a very bad idea";
+    const CScript genesisOutputScript = CScript() << 0x0 << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 
@@ -138,12 +138,12 @@ public:
         // Blocks 371337+ are AuxPoW
         auxpowConsensus = digishieldConsensus;
         auxpowConsensus.nHeightEffective = 371337;
-        auxpowConsensus.fAllowLegacyBlocks = false;
+        auxpowConsensus.fAllowLegacyBlocks = true;
 
         // Assemble the binary search tree of consensus parameters
         digishieldConsensus.pLeft = &consensus;
         digishieldConsensus.pRight = &auxpowConsensus;
-        pConsensusRoot = &digishieldConsensus;
+        pConsensusRoot = &consensus;
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -288,7 +288,7 @@ public:
         auxpowConsensus = minDifficultyConsensus;
         auxpowConsensus.nHeightEffective = 158100;
         auxpowConsensus.fPowAllowDigishieldMinDifficultyBlocks = true;
-        auxpowConsensus.fAllowLegacyBlocks = false;
+        auxpowConsensus.fAllowLegacyBlocks = true;
 
         // Assemble the binary search tree of parameters
         pConsensusRoot = &digishieldConsensus;
@@ -304,29 +304,32 @@ public:
         nDefaultPort = 8585;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1702203438, 43707600, 0x1e0ffff0, 1, 10000 * COIN);
+        genesis = CreateGenesisBlock(1740721211, 18711240, 0x1e0ffff0, 1, 10000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         //digishieldConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
         minDifficultyConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
         //auxpowConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
-        // print out the genesis block hash
-        std::cout << "Genesis Block Hash: " << consensus.hashGenesisBlock.ToString() << std::endl;
-        std::cout << "Merkle Root Hash: " << genesis.hashMerkleRoot.ToString() << std::endl;
-        assert(consensus.hashGenesisBlock == uint256S("000000c7dc5b9e53827fd5920feab91fde1ed9b398e16f35fcb95d8056c574ed"));
-        assert(genesis.hashMerkleRoot == uint256S("b0a268fd73bcfb1d3d7a798c941a7fe7377054675ab626d8f2564742d75a4c93"));
+        // print out the genesis block info
+        //std::cout << "Genesis Block Hash: " << consensus.hashGenesisBlock.ToString() << std::endl;
+        //std::cout << "Gnesis PoW hash: " << genesis.GetPoWHash().ToString() << std::endl;
+        //std::cout << "Merkle Root Hash: " << genesis.hashMerkleRoot.ToString() << std::endl;
+        //std::cout << "Genesis timestamp: " << genesis.nTime << std::endl;
+        assert(consensus.hashGenesisBlock == uint256S("4a97e84016438b8a88c2073a717be7abb27239b4a81e9f9bfcb710bb6f3d7452"));
+        assert(genesis.hashMerkleRoot == uint256S("f1f8b420ff472229611f9d4e6119edf82e5b55ab1525d83e21dcd35fddb0cc01"));
 
-        std::string targetHash = "000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-        if (genesis.GetHash().ToString() > targetHash)
+        /* std::string targetHash = "000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+        if (genesis.GetPoWHash().ToString() > targetHash)
         {
             std::cout << "Recalculating params for genesis block..." << std::endl;
             std::cout << "Old genesis nonce: " << genesis.nNonce << std::endl;
             std::cout << "Old genesis hash: " << genesis.GetHash().ToString() << std::endl;
             std::cout << "Old genesis PoW hash: " << genesis.GetPoWHash().ToString() << std::endl;
             // iterate nonce and check hash until it is smaller than the target
-            for (genesis.nNonce = 0; genesis.GetHash().ToString() > targetHash; genesis.nNonce++) { }
+            for (genesis.nNonce = 0; genesis.GetPoWHash().ToString() > targetHash; genesis.nNonce++) { }
             std::cout << "New genesis nonce: " << genesis.nNonce << std::endl;
             std::cout << "New genesis hash: " << genesis.GetHash().ToString() << std::endl;
-        }
+            std::cout << "New genesis PoW hash: " << genesis.GetPoWHash().ToString() << std::endl;
+        } */
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -424,7 +427,7 @@ public:
         digishieldConsensus.fDigishieldDifficultyCalculation = true;
 
         auxpowConsensus = digishieldConsensus;
-        auxpowConsensus.fAllowLegacyBlocks = false;
+        auxpowConsensus.fAllowLegacyBlocks = true;
         auxpowConsensus.nHeightEffective = 20;
 
         // Assemble the binary search tree of parameters

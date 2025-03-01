@@ -1162,7 +1162,7 @@ static bool ReadBlockOrHeader(T& block, const CDiskBlockPos& pos, const Consensu
     }
 
     // Check the header
-    if (!CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
+    if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, consensusParams))
         return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
     return true;
@@ -2924,7 +2924,7 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool f
     // We don't have block height as this is called without context (i.e. without
     // knowing the previous block), but that's okay, as the checks done are permissive
     // (i.e. doesn't check work limit or whether AuxPoW is enabled)
-    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, Params().GetConsensus(0)))
+    if (fCheckPOW && !CheckProofOfWork(block.GetPoWHash(), block.nBits, Params().GetConsensus(0)))
         return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
 
     return true;
