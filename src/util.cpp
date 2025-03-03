@@ -17,6 +17,7 @@
 #include "utiltime.h"
 
 #include <stdarg.h>
+#include <cstring>
 
 #if (defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__))
 #include <pthread.h>
@@ -259,7 +260,7 @@ bool LogAcceptCategory(const char* category)
             setCategories.count(string("1")) == 0 &&
             setCategories.count(string("all")) == 0 &&
             setCategories.count(string(category)) == 0) ||
-            category == "libevent")
+            strcmp(category, "libevent") == 0)
             return false;
     }
     return true;

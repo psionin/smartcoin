@@ -24,11 +24,11 @@
 
 #include <memory>
 #include <stdint.h>
+#include <univalue.h>
+#include <atomic>
 
 #include <boost/assign/list_of.hpp>
 #include <boost/shared_ptr.hpp>
-
-#include <univalue.h>
 
 using namespace std;
 

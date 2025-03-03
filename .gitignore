@@ -124,3 +124,6 @@ db4/
 config.sh
 src/univalue/configure~
 configure~
+
+assistant/
+
