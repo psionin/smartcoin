@@ -126,4 +126,7 @@ src/univalue/configure~
 configure~
 
 assistant/
+doxygen/
+Doxyfile
 
+MINING_CHANGES.md

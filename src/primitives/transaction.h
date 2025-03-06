@@ -195,7 +195,7 @@ public:
         */
 
         // Smartcoin: Anything below 1 SMC is always dust
-        return COIN;
+        return CENT;
     }
 
     bool IsDust(const CFeeRate &minRelayTxFee) const
