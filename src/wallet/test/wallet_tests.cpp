@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests)
         // with an empty wallet we can't even pay one cent
         BOOST_CHECK(!wallet.SelectCoinsMinConf( 1 * CENT, 1, 6, 0, vCoins, setCoinsRet, nValueRet));
 
-        add_coin(1*CENT, 4);        // add a new 1 cent coin
+        add_coin(1 * CENT, 4);        // add a new 1 cent coin
 
         // with a new 1 cent coin, we still can't find a mature 1 cent
         BOOST_CHECK(!wallet.SelectCoinsMinConf( 1 * CENT, 1, 6, 0, vCoins, setCoinsRet, nValueRet));
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests)
         BOOST_CHECK( wallet.SelectCoinsMinConf( 1 * CENT, 1, 1, 0, vCoins, setCoinsRet, nValueRet));
         BOOST_CHECK_EQUAL(nValueRet, 1 * CENT);
 
-        add_coin(2*CENT);           // add a mature 2 cent coin
+        add_coin(2 * CENT);           // add a mature 2 cent coin
 
         // we can't make 3 cents of mature coins
         BOOST_CHECK(!wallet.SelectCoinsMinConf( 3 * CENT, 1, 6, 0, vCoins, setCoinsRet, nValueRet));
@@ -109,9 +109,9 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests)
         BOOST_CHECK( wallet.SelectCoinsMinConf( 3 * CENT, 1, 1, 0, vCoins, setCoinsRet, nValueRet));
         BOOST_CHECK_EQUAL(nValueRet, 3 * CENT);
 
-        add_coin(5*CENT);           // add a mature 5 cent coin,
-        add_coin(10*CENT, 3, true); // a new 10 cent coin sent from one of our own addresses
-        add_coin(20*CENT);          // and a mature 20 cent coin
+        add_coin( 5 * CENT);          // add a mature 5 cent coin,
+        add_coin(10 * CENT, 3, true); // a new 10 cent coin sent from one of our own addresses
+        add_coin(20 * CENT);          // and a mature 20 cent coin
 
         // now we have new: 1+10=11 (of which 10 was self-sent), and mature: 2+5+20=27.  total = 38
 
@@ -149,11 +149,11 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests)
         // now clear out the wallet and start again to test choosing between subsets of smaller coins and the next biggest coin
         empty_wallet();
 
-        add_coin( 6*CENT);
-        add_coin( 7*CENT);
-        add_coin( 8*CENT);
-        add_coin(20*CENT);
-        add_coin(30*CENT); // now we have 6+7+8+20+30 = 71 cents total
+        add_coin( 6 * CENT);
+        add_coin( 7 * CENT);
+        add_coin( 8 * CENT);
+        add_coin(20 * CENT);
+        add_coin(30 * CENT); // now we have 6+7+8+20+30 = 71 cents total
 
         // check that we have 71 and not 72
         BOOST_CHECK( wallet.SelectCoinsMinConf(71 * CENT, 1, 1, 0, vCoins, setCoinsRet, nValueRet));
@@ -164,14 +164,14 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests)
         BOOST_CHECK_EQUAL(nValueRet, 20 * CENT); // we should get 20 in one coin
         BOOST_CHECK_EQUAL(setCoinsRet.size(), 1U);
 
-        add_coin( 5*CENT); // now we have 5+6+7+8+20+30 = 75 cents total
+        add_coin( 5 * CENT); // now we have 5+6+7+8+20+30 = 75 cents total
 
         // now if we try making 16 cents again, the smaller coins can make 5+6+7 = 18 cents, better than the next biggest coin, 20
         BOOST_CHECK( wallet.SelectCoinsMinConf(16 * CENT, 1, 1, 0, vCoins, setCoinsRet, nValueRet));
         BOOST_CHECK_EQUAL(nValueRet, 18 * CENT); // we should get 18 in 3 coins
         BOOST_CHECK_EQUAL(setCoinsRet.size(), 3U);
 
-        add_coin( 18*CENT); // now we have 5+6+7+8+18+20+30
+        add_coin(18 * CENT); // now we have 5+6+7+8+18+20+30
 
         // and now if we try making 16 cents again, the smaller coins can make 5+6+7 = 18 cents, the same as the next biggest coin, 18
         BOOST_CHECK( wallet.SelectCoinsMinConf(16 * CENT, 1, 1, 0, vCoins, setCoinsRet, nValueRet));
@@ -184,10 +184,10 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests)
         BOOST_CHECK_EQUAL(setCoinsRet.size(), 2U);
 
         // check that the smallest bigger coin is used
-        add_coin( 1*COIN);
-        add_coin( 2*COIN);
-        add_coin( 3*COIN);
-        add_coin( 4*COIN); // now we have 5+6+7+8+18+20+30+100+200+300+400 = 1094 cents
+        add_coin( 1 * COIN);
+        add_coin( 2 * COIN);
+        add_coin( 3 * COIN);
+        add_coin( 4 * COIN); // now we have 5+6+7+8+18+20+30+100+200+300+400 = 1094 cents
         BOOST_CHECK( wallet.SelectCoinsMinConf(95 * CENT, 1, 1, 0, vCoins, setCoinsRet, nValueRet));
         BOOST_CHECK_EQUAL(nValueRet, 1 * COIN);  // we should get 1 BTC in 1 coin
         BOOST_CHECK_EQUAL(setCoinsRet.size(), 1U);
@@ -211,7 +211,7 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests)
         BOOST_CHECK_EQUAL(nValueRet, MIN_CHANGE);
 
         // but if we add a bigger coin, small change is avoided
-        add_coin(1111*MIN_CHANGE);
+        add_coin(1111 * MIN_CHANGE);
 
         // try making 1 from 0.1 + 0.2 + 0.3 + 0.4 + 0.5 + 1111 = 1112.5
         BOOST_CHECK( wallet.SelectCoinsMinConf(1 * MIN_CHANGE, 1, 1, 0, vCoins, setCoinsRet, nValueRet));
@@ -321,7 +321,7 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests)
             // add 75 cents in small change.  not enough to make 90 cents,
             // then try making 90 cents.  there are multiple competing "smallest bigger" coins,
             // one of which should be picked at random
-            add_coin(5 * CENT);
+            add_coin( 5 * CENT);
             add_coin(10 * CENT);
             add_coin(15 * CENT);
             add_coin(20 * CENT);
@@ -500,7 +500,7 @@ BOOST_AUTO_TEST_CASE(GetMinimumFee_test)
     CTxOut txout1(value, (CScript)vector<unsigned char>(24, 0));
     tx.vout.push_back(txout1);
 
-    int64_t nMinTxFee = COIN;
+    int64_t nMinTxFee = CENT / 10;
 
     BOOST_CHECK_EQUAL(CWallet::GetMinimumFee(tx, 250, 0, pool), nMinTxFee);
     BOOST_CHECK_EQUAL(CWallet::GetMinimumFee(tx, 1000, 0, pool), nMinTxFee);
@@ -512,15 +512,14 @@ BOOST_AUTO_TEST_CASE(GetMinimumFee_dust_test)
     // Derived from main net TX 3d6ec3ae2aca3ae0a6c65074fd8ee888cd7ed262f2cbaa25d33861989324a14e
     CMutableTransaction tx;
     CTxMemPool pool(payTxFee);
-    CTxOut txout1(139496846, (CScript)vector<unsigned char>(24, 0)); // Regular output
-    CTxOut txout2(15499649, (CScript)vector<unsigned char>(24, 0)); // Dust output
+    CTxOut txout1(139496846,(CScript)vector<unsigned char>(24, 0)); // Regular output
+    CTxOut txout2(    15499,(CScript)vector<unsigned char>(24, 0)); // Dust output
     tx.vout.push_back(txout1);
     tx.vout.push_back(txout2);
 
-    int64_t nMinTxFee = COIN;
+    int64_t nMinTxFee = CENT / 10;
 
     // Confirm dust penalty fees are added on
-
     BOOST_CHECK_EQUAL(CWallet::GetMinimumFee(tx, 963, 0, pool), 2 * nMinTxFee);
     BOOST_CHECK_EQUAL(CWallet::GetMinimumFee(tx, 1000, 0, pool), 2 * nMinTxFee);
     BOOST_CHECK_EQUAL(CWallet::GetMinimumFee(tx, 1999, 0, pool), 3 * nMinTxFee);

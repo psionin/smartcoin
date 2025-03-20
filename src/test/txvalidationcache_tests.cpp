@@ -17,8 +17,7 @@
 
 BOOST_AUTO_TEST_SUITE(tx_validationcache_tests)
 
-static bool
-ToMemPool(CMutableTransaction& tx)
+static bool ToMemPool(CMutableTransaction& tx)
 {
     LOCK(cs_main);
 

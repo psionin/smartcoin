@@ -37,7 +37,7 @@ extern bool fPrintToConsole;
 extern void noui_connect();
 
 /** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
-static const int COINBASE_MATURITY = 60*4; // 4 hours of blocks
+static const int COINBASE_MATURITY = 60 * 4; // Why so much?
 
 BasicTestingSetup::BasicTestingSetup(const std::string& chainName)
 {
@@ -115,8 +115,7 @@ TestChain240Setup::TestChain240Setup() : TestingSetup(CBaseChainParams::REGTEST)
 // Create a new block with just given transactions, coinbase paying to
 // scriptPubKey, and try to add it to the current chain.
 //
-CBlock
-TestChain240Setup::CreateAndProcessBlock(const std::vector<CMutableTransaction>& txns, const CScript& scriptPubKey)
+CBlock TestChain240Setup::CreateAndProcessBlock(const std::vector<CMutableTransaction>& txns, const CScript& scriptPubKey)
 {
     const CChainParams& chainparams = Params();
     std::unique_ptr<CBlockTemplate> pblocktemplate = BlockAssembler(chainparams).CreateNewBlock(scriptPubKey, true);
@@ -142,7 +141,6 @@ TestChain240Setup::CreateAndProcessBlock(const std::vector<CMutableTransaction>&
 TestChain240Setup::~TestChain240Setup()
 {
 }
-
 
 CTxMemPoolEntry TestMemPoolEntryHelper::FromTx(const CMutableTransaction &tx, CTxMemPool *pool) {
     CTransaction txn(tx);

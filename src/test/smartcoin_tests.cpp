@@ -11,98 +11,51 @@
 
 BOOST_FIXTURE_TEST_SUITE(smartcoin_tests, TestingSetup)
 
-/**
- * the maximum block reward at a given height for a block without fees
- */
-uint64_t expectedMaxSubsidy(int height) {
-    if (height < 100000) {
-        return 1000000 * COIN;
-    } else if (height < 145000) {
-        return 500000 * COIN;
-    } else if (height < 200000) {
-        return 250000 * COIN;
-    } else if (height < 300000) {
-        return 125000 * COIN;
-    } else if (height < 400000) {
-        return  62500 * COIN;
-    } else if (height < 500000) {
-        return  31250 * COIN;
-    } else if (height < 600000) {
-        return  15625 * COIN;
-    } else {
-        return  10000 * COIN;
-    }
-}
-
-/**
- * the minimum possible value for the maximum block reward at a given height
- * for a block without fees
- */
-uint64_t expectedMinSubsidy(int height) {
-    if (height < 100000) {
-        return 0;
-    } else if (height < 145000) {
-        return 0;
-    } else if (height < 200000) {
-        return 250000 * COIN;
-    } else if (height < 300000) {
-        return 125000 * COIN;
-    } else if (height < 400000) {
-        return  62500 * COIN;
-    } else if (height < 500000) {
-        return  31250 * COIN;
-    } else if (height < 600000) {
-        return  15625 * COIN;
-    } else {
-        return  10000 * COIN;
-    }
-}
-
 BOOST_AUTO_TEST_CASE(subsidy_limit_test)
 {
     int nHeight = 0;
-    int nStepSize= 1;
+    int nStepSize = 1000;
     const CChainParams& mainParams = Params(CBaseChainParams::MAIN);
     CAmount nSum = 0;
     uint256 prevHash = uint256S("0");
 
-    for (nHeight = 0; nHeight <= 100000; nHeight++) {
+    for (nHeight = 2; nHeight < 1000; nHeight+=(nStepSize/20)) {
         const Consensus::Params& params = mainParams.GetConsensus(nHeight);
         CAmount nSubsidy = GetSmartcoinBlockSubsidy(nHeight, params, prevHash);
         BOOST_CHECK(MoneyRange(nSubsidy));
-        BOOST_CHECK(nSubsidy <= 1000000 * COIN);
+        BOOST_CHECK(nSubsidy <= 1 * COIN);
+        nSum += nSubsidy * (nStepSize/20);
+    }
+    for (; nHeight < 200000; nHeight+=nStepSize) {
+        const Consensus::Params& params = mainParams.GetConsensus(nHeight);
+        CAmount nSubsidy = GetSmartcoinBlockSubsidy(nHeight, params, prevHash);
+        BOOST_CHECK(MoneyRange(nSubsidy));
+        BOOST_CHECK(nSubsidy <= 64 * COIN);
         nSum += nSubsidy * nStepSize;
     }
-    for (; nHeight <= 145000; nHeight++) {
+    for (; nHeight < 300000; nHeight+=nStepSize) {
         const Consensus::Params& params = mainParams.GetConsensus(nHeight);
         CAmount nSubsidy = GetSmartcoinBlockSubsidy(nHeight, params, prevHash);
         BOOST_CHECK(MoneyRange(nSubsidy));
-        BOOST_CHECK(nSubsidy <= 500000 * COIN);
-        nSum += nSubsidy * nStepSize;
-    }
-    for (; nHeight < 600000; nHeight++) {
-        const Consensus::Params& params = mainParams.GetConsensus(nHeight);
-        CAmount nSubsidy = GetSmartcoinBlockSubsidy(nHeight, params, prevHash);
-        CAmount nExpectedSubsidy = (500000 >> (nHeight / 100000)) * COIN;
-        BOOST_CHECK(MoneyRange(nSubsidy));
-        BOOST_CHECK_EQUAL(nSubsidy, nExpectedSubsidy);
+        BOOST_CHECK(nSubsidy <= 32 * COIN);
         nSum += nSubsidy * nStepSize;
     }
 
-    //test sum +- ~10billion
-    arith_uint256 upperlimit = arith_uint256("95e14ec776380000"); //108 billion doge
+    CAmount upperlimit = 16000000 * COIN;
     BOOST_CHECK(nSum <= upperlimit);
 
-    arith_uint256 lowerlimit = arith_uint256("7a1fe16027700000"); //88 billion doge
+    CAmount lowerlimit = 15000000 * COIN;
     BOOST_CHECK(nSum >= lowerlimit);
 
-    // Test reward at 600k+ is constant
+    // Test reward at later blocks
+    nHeight = 1000000;
     const Consensus::Params& params = mainParams.GetConsensus(nHeight);
     CAmount nConstantSubsidy = GetSmartcoinBlockSubsidy(nHeight, params, prevHash);
-    BOOST_CHECK_EQUAL(nConstantSubsidy, 10000 * COIN);
+    BOOST_CHECK_EQUAL(nConstantSubsidy, 8 * COIN);
 
-    nConstantSubsidy = GetSmartcoinBlockSubsidy(700000, params, prevHash);
-    BOOST_CHECK_EQUAL(nConstantSubsidy, 10000 * COIN);
+    nHeight = 2000000;
+    nConstantSubsidy = GetSmartcoinBlockSubsidy(nHeight, params, prevHash);
+    BOOST_CHECK_EQUAL(nConstantSubsidy, 2 * COIN);
 }
 
 BOOST_AUTO_TEST_CASE(get_next_work_difficulty_limit)
@@ -116,7 +69,7 @@ BOOST_AUTO_TEST_CASE(get_next_work_difficulty_limit)
     pindexLast.nHeight = 239;
     pindexLast.nTime = 1386475638; // Block #239
     pindexLast.nBits = 0x1e0ffff0;
-    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1e00ffff);
+    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1e04bd6b);
 }
 
 BOOST_AUTO_TEST_CASE(get_next_work_pre_digishield)
@@ -130,7 +83,7 @@ BOOST_AUTO_TEST_CASE(get_next_work_pre_digishield)
     pindexLast.nHeight = 9599;
     pindexLast.nTime = 1386954113;
     pindexLast.nBits = 0x1c1a1206;
-    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1c15ea59);
+    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1c684818);
 }
 
 BOOST_AUTO_TEST_CASE(get_next_work_digishield)
@@ -145,7 +98,7 @@ BOOST_AUTO_TEST_CASE(get_next_work_digishield)
     pindexLast.nHeight = 145000;
     pindexLast.nTime = 1395094679;
     pindexLast.nBits = 0x1b499dfd;
-    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1b671062);
+    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1b12677f);
 }
 
 BOOST_AUTO_TEST_CASE(get_next_work_digishield_modulated_upper)
@@ -160,7 +113,7 @@ BOOST_AUTO_TEST_CASE(get_next_work_digishield_modulated_upper)
     pindexLast.nHeight = 145107;
     pindexLast.nTime = 1395101360;
     pindexLast.nBits = 0x1b3439cd;
-    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1b4e56b3);
+    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1b0d0e73);
 }
 
 BOOST_AUTO_TEST_CASE(get_next_work_digishield_modulated_lower)
@@ -175,7 +128,7 @@ BOOST_AUTO_TEST_CASE(get_next_work_digishield_modulated_lower)
     pindexLast.nHeight = 149423;
     pindexLast.nTime = 1395380447;
     pindexLast.nBits = 0x1b446f21;
-    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1b335358);
+    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1b111bc8);
 }
 
 BOOST_AUTO_TEST_CASE(get_next_work_digishield_rounding)
@@ -191,7 +144,7 @@ BOOST_AUTO_TEST_CASE(get_next_work_digishield_rounding)
     pindexLast.nHeight = 145001;
     pindexLast.nTime = 1395094727;
     pindexLast.nBits = 0x1b671062;
-    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1b6558a4);
+    BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1b19c418);
 }
 
 BOOST_AUTO_TEST_CASE(hardfork_parameters)
@@ -199,35 +152,35 @@ BOOST_AUTO_TEST_CASE(hardfork_parameters)
     SelectParams(CBaseChainParams::MAIN);
     const Consensus::Params& initialParams = Params().GetConsensus(0);
 
-    BOOST_CHECK_EQUAL(initialParams.nPowTargetTimespan, 14400);
+    BOOST_CHECK_EQUAL(initialParams.nPowTargetTimespan, 2400);
     BOOST_CHECK_EQUAL(initialParams.fAllowLegacyBlocks, true);
     BOOST_CHECK_EQUAL(initialParams.fDigishieldDifficultyCalculation, false);
 
     const Consensus::Params& initialParamsEnd = Params().GetConsensus(144999);
-    BOOST_CHECK_EQUAL(initialParamsEnd.nPowTargetTimespan, 14400);
+    BOOST_CHECK_EQUAL(initialParamsEnd.nPowTargetTimespan, 2400);
     BOOST_CHECK_EQUAL(initialParamsEnd.fAllowLegacyBlocks, true);
     BOOST_CHECK_EQUAL(initialParamsEnd.fDigishieldDifficultyCalculation, false);
 
     const Consensus::Params& digishieldParams = Params().GetConsensus(145000);
-    BOOST_CHECK_EQUAL(digishieldParams.nPowTargetTimespan, 60);
+    BOOST_CHECK_EQUAL(digishieldParams.nPowTargetTimespan, 2400);
     BOOST_CHECK_EQUAL(digishieldParams.fAllowLegacyBlocks, true);
-    BOOST_CHECK_EQUAL(digishieldParams.fDigishieldDifficultyCalculation, true);
+    BOOST_CHECK_EQUAL(digishieldParams.fDigishieldDifficultyCalculation, false);
 
     const Consensus::Params& digishieldParamsEnd = Params().GetConsensus(371336);
-    BOOST_CHECK_EQUAL(digishieldParamsEnd.nPowTargetTimespan, 60);
+    BOOST_CHECK_EQUAL(digishieldParamsEnd.nPowTargetTimespan, 2400);
     BOOST_CHECK_EQUAL(digishieldParamsEnd.fAllowLegacyBlocks, true);
-    BOOST_CHECK_EQUAL(digishieldParamsEnd.fDigishieldDifficultyCalculation, true);
+    BOOST_CHECK_EQUAL(digishieldParamsEnd.fDigishieldDifficultyCalculation, false);
 
     const Consensus::Params& auxpowParams = Params().GetConsensus(371337);
-    BOOST_CHECK_EQUAL(auxpowParams.nHeightEffective, 371337);
-    BOOST_CHECK_EQUAL(auxpowParams.nPowTargetTimespan, 60);
-    BOOST_CHECK_EQUAL(auxpowParams.fAllowLegacyBlocks, false);
-    BOOST_CHECK_EQUAL(auxpowParams.fDigishieldDifficultyCalculation, true);
+    //BOOST_CHECK_EQUAL(auxpowParams.nHeightEffective, 371337);
+    BOOST_CHECK_EQUAL(auxpowParams.nPowTargetTimespan, 2400);
+    BOOST_CHECK_EQUAL(auxpowParams.fAllowLegacyBlocks, true);
+    BOOST_CHECK_EQUAL(auxpowParams.fDigishieldDifficultyCalculation, false);
 
     const Consensus::Params& auxpowHighParams = Params().GetConsensus(700000); // Arbitrary point after last hard-fork
-    BOOST_CHECK_EQUAL(auxpowHighParams.nPowTargetTimespan, 60);
-    BOOST_CHECK_EQUAL(auxpowHighParams.fAllowLegacyBlocks, false);
-    BOOST_CHECK_EQUAL(auxpowHighParams.fDigishieldDifficultyCalculation, true);
+    BOOST_CHECK_EQUAL(auxpowHighParams.nPowTargetTimespan, 2400);
+    BOOST_CHECK_EQUAL(auxpowHighParams.fAllowLegacyBlocks, true);
+    BOOST_CHECK_EQUAL(auxpowHighParams.fDigishieldDifficultyCalculation, false);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

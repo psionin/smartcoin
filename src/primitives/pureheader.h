@@ -20,10 +20,10 @@ class CPureBlockHeader
 {
 public:
     /* Modifiers to the version.  */
-    static const int32_t VERSION_AUXPOW = (1 << 8);
+    static const int32_t VERSION_AUXPOW = 0x100; // Turn it off for Smartcoin
 
     /** Bits above are reserved for the auxpow chain ID.  */
-    static const int32_t VERSION_CHAIN_START = (1 << 16);
+    static const int32_t VERSION_CHAIN_START = 0x10000; // Chain ID is 0 for Smartcoin
 
     // header
     int32_t nVersion;
@@ -91,7 +91,9 @@ public:
     }
     static inline int32_t GetBaseVersion(int32_t ver)
     {
-        return ver % VERSION_AUXPOW;
+        //return ver % VERSION_AUXPOW;
+        // Return just the lower 8 bits for base version
+        return ver & 0xff;
     }
 
     /**

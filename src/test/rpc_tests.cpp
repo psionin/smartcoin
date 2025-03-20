@@ -106,20 +106,39 @@ BOOST_AUTO_TEST_CASE(rpc_togglenetwork)
 
 BOOST_AUTO_TEST_CASE(rpc_rawsign)
 {
+    std::string address1 = "SiFZQFdqFBk6Y8RR3Xe5AcHnRnrj9cbTHa";
+    std::string pubkey1 = "036213dd0c263d9d8a7f85aeffb6b05bb876662b5b492ec74e7f19837a213d5853"; // SiFZQFdqFBk6Y8RR3Xe5AcHnRnrj9cbTHa
+    std::string pubkey2 = "02b9cd4ba31fbddab77dea90344eff0d90ebb1a9b7ee290484dc2e2db4952683b0"; // STUYawaZ6ohFbR8DRCXAxP3F5ZjhMwU7R7
+    std::string privkey1 = "VFrt96B3TRgur7qw3QQpSphSD9dhuza9azmgVd8Ct7hvLAHaVkn6";
+    std::string privkey2 = "VFoFNdy77fuuM2QPrKq75zgXwhGdrdtBBWzdzySpvC2A9bMa2GnN";
+
     UniValue r;
-    // input is a 1-of-2 multisig (so is output):
-    std::string prevout =
-      "[{\"txid\":\"b4cc287e58f87cdae59417329f710f3ecd75a4ee1d2872b7248f50977c8493f3\","
-      "\"vout\":1,\"scriptPubKey\":\"a914b10c9df5f7edf436c697f02f1efdba4cf399615187\","
-      "\"redeemScript\":\"512103debedc17b3df2badbcdd86d5feb4562b86fe182e5998abd8bcd4f122c6155b1b21027e940bb73ab8732bfdf7f9216ecefca5b94d6df834e77e108f68e66f126044c052ae\"}]";
-    r = CallRPC(std::string("createrawtransaction ")+prevout+" "+
-      "{\"A8aRNzQnSFcgn2iXd7CzkbRHu9raZFHSkT\":11}"); // 3HqAe9LtNBjnsfM4CyYaWTnvCaUYT7v4oZ\":11}");
+
+    // Create a 1-of-2 multisig address
+    std::string createMultisigCmd = std::string("createmultisig 1 [\"") + pubkey1 + "\",\"" + pubkey2 + "\"]";
+    UniValue createMultisigResult = CallRPC(createMultisigCmd);
+    std::string multisigAddress = find_value(createMultisigResult.get_obj(), "address").get_str();
+    std::string redeemScript = find_value(createMultisigResult.get_obj(), "redeemScript").get_str();
+
+    // Input is a 1-of-2 multisig
+    std::string prevout = "[{\"txid\":\"b4cc287e58f87cdae59417329f710f3ecd75a4ee1d2872b7248f50977c8493f3\","
+                         "\"vout\":1,\"scriptPubKey\":\"" + redeemScript + "\","
+                         "\"redeemScript\":\"" + redeemScript + "\"}]";
+
+    r = CallRPC(std::string("createrawtransaction ") + prevout + " " +
+                "{\"" + address1 + "\":11}");
     std::string notsigned = r.get_str();
-    std::string privkey1 = "\"QSGT8Sd8z8aBcc3o7HAGqeEicLjTCU8JzbVmUZcvp4hCx66fsLPE\"";
-    std::string privkey2 = "\"QR6Yov9ta4v5JD38kFRx56Z5dYm4TsCLACrEXeeF5AdeBCNKeB44\"";
-    r = CallRPC(std::string("signrawtransaction ")+notsigned+" "+prevout+" "+"[]");
+
+    // Test signing with no private keys
+    r = CallRPC(std::string("signrawtransaction ") + notsigned + " " + prevout + " []");
     BOOST_CHECK(find_value(r.get_obj(), "complete").get_bool() == false);
-    r = CallRPC(std::string("signrawtransaction ")+notsigned+" "+prevout+" "+"["+privkey1+","+privkey2+"]");
+
+    // Test signing with private keys
+    r = CallRPC(std::string("signrawtransaction ") + notsigned + " " + prevout + " [\"" + privkey1 + "\",\"" + privkey2 + "\"]");
+    BOOST_CHECK(find_value(r.get_obj(), "complete").get_bool() == true);
+
+    // Test that one key is sufficient
+    r = CallRPC(std::string("signrawtransaction ") + notsigned + " " + prevout + " [\"" + privkey1 + "\"]");
     BOOST_CHECK(find_value(r.get_obj(), "complete").get_bool() == true);
 }
 
@@ -194,8 +213,8 @@ BOOST_AUTO_TEST_CASE(rpc_parse_monetary_values)
     BOOST_CHECK_EQUAL(AmountFromValue(ValueFromString("0.50000000")), 50000000LL);
     BOOST_CHECK_EQUAL(AmountFromValue(ValueFromString("0.89898989")), 89898989LL);
     BOOST_CHECK_EQUAL(AmountFromValue(ValueFromString("1.00000000")), 100000000LL);
-    BOOST_CHECK_EQUAL(AmountFromValue(ValueFromString("20999999.9999999")), 2099999999999990LL);
-    BOOST_CHECK_EQUAL(AmountFromValue(ValueFromString("20999999.99999999")), 2099999999999999LL);
+    BOOST_CHECK_EQUAL(AmountFromValue(ValueFromString("19999999.9999999")), 1999999999999990LL);
+    BOOST_CHECK_EQUAL(AmountFromValue(ValueFromString("19999999.99999999")), 1999999999999999LL);
 
     BOOST_CHECK_EQUAL(AmountFromValue(ValueFromString("1e-8")), COIN/100000000);
     BOOST_CHECK_EQUAL(AmountFromValue(ValueFromString("0.1e-7")), COIN/100000000);
@@ -243,7 +262,7 @@ BOOST_AUTO_TEST_CASE(rpc_ban)
 
     UniValue r;
     BOOST_CHECK_NO_THROW(r = CallRPC(std::string("setban 127.0.0.0 add")));
-    BOOST_CHECK_THROW(r = CallRPC(std::string("setban 127.0.0.0:8334")), std::runtime_error); //portnumber for setban not allowed
+    BOOST_CHECK_THROW(r = CallRPC(std::string("setban 127.0.0.0:8334")), std::runtime_error); // port number for setban not allowed
     BOOST_CHECK_NO_THROW(r = CallRPC(std::string("listbanned")));
     UniValue ar = r.get_array();
     UniValue o1 = ar[0].get_obj();
@@ -254,14 +273,16 @@ BOOST_AUTO_TEST_CASE(rpc_ban)
     ar = r.get_array();
     BOOST_CHECK_EQUAL(ar.size(), 0);
 
-    BOOST_CHECK_NO_THROW(r = CallRPC(std::string("setban 127.0.0.0/24 add 1607731200 true")));
+    int64_t banTimestamp = GetTime() + 365 * 24 * 60 * 60;
+    std::string banCmd = std::string("setban 127.0.0.0/24 add ") + std::to_string(banTimestamp) + " true";
+    BOOST_CHECK_NO_THROW(r = CallRPC(banCmd));
     BOOST_CHECK_NO_THROW(r = CallRPC(std::string("listbanned")));
     ar = r.get_array();
     o1 = ar[0].get_obj();
     adr = find_value(o1, "address");
     UniValue banned_until = find_value(o1, "banned_until");
     BOOST_CHECK_EQUAL(adr.get_str(), "127.0.0.0/24");
-    BOOST_CHECK_EQUAL(banned_until.get_int64(), 1607731200); // absolute time check
+    BOOST_CHECK_EQUAL(banned_until.get_int64(), banTimestamp); // absolute time check
 
     BOOST_CHECK_NO_THROW(CallRPC(std::string("clearbanned")));
 

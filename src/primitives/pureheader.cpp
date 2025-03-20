@@ -12,9 +12,11 @@
 
 void CPureBlockHeader::SetBaseVersion(int32_t nBaseVersion, int32_t nChainId)
 {
-    assert(nBaseVersion >= 1 && nBaseVersion < VERSION_AUXPOW);
-    assert(!IsAuxpow());
-    nVersion = nBaseVersion | (nChainId * VERSION_CHAIN_START);
+    //assert(nBaseVersion >= 1 && nBaseVersion < VERSION_AUXPOW);
+    //assert(!IsAuxpow());
+    //nVersion = nBaseVersion | (nChainId * VERSION_CHAIN_START);
+    // Just set the base version, ignore chain ID
+    nVersion = nBaseVersion;
 }
 
 uint256 CPureBlockHeader::GetHash() const
@@ -24,7 +26,8 @@ uint256 CPureBlockHeader::GetHash() const
 
 uint256 CPureBlockHeader::GetPoWHash() const
 {
-    if (nTime > 1406160000) { // July 24 2014 12:00:00 AM UTC, X11 fork
+    //std::string network = Params().NetworkIDString();
+    if (nTime > 1406160000 && nTime < 1721779200) { // July 24 2014 12:00:00 AM UTC, X11 fork - but let's go back to Scrypt for relaunch
         std::vector<unsigned char> vch(80);
         CVectorWriter ss(SER_NETWORK, PROTOCOL_VERSION, vch, 0);
         ss << *this;

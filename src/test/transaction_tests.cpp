@@ -12,7 +12,7 @@
 #include "core_io.h"
 #include "key.h"
 #include "keystore.h"
-#include "validation.h" // For CheckTransaction
+#include "validation.h"
 #include "policy/policy.h"
 #include "script/script.h"
 #include "script/sign.h"
@@ -689,7 +689,7 @@ BOOST_AUTO_TEST_CASE(test_IsStandard)
     std::string reason;
     BOOST_CHECK(IsStandardTx(t, reason));
 
-    // Smartcoin: Dust is totally different in Smartcoin, disable these tests
+    // Dogecoin: Dust is totally different in Dogecoin, disable these tests
     // Check dust with default relay fee:
     /* CAmount nDustThreshold = 182 * dustRelayFee.GetFeePerK()/1000 * 3;
     BOOST_CHECK_EQUAL(nDustThreshold, 546);

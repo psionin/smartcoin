@@ -130,3 +130,6 @@ doxygen/
 Doxyfile
 
 MINING_CHANGES.md
+.cursor/
+
+python/

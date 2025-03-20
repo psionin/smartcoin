@@ -8,14 +8,11 @@
 
 #include "consensus/params.h"
 #include <stdint.h>
-#include "bignum.h"
 #include "cmath"
 
 class CBlockHeader;
 class CBlockIndex;
 class uint256;
-
-static CBigNum bnProofOfWorkLimit(~arith_uint256(0) >> 20);
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params&);
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params&);

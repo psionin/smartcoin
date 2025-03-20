@@ -112,28 +112,22 @@ struct CDiskBlockPos
 enum BlockStatus: uint32_t {
     //! Unused.
     BLOCK_VALID_UNKNOWN      =    0,
-
     //! Parsed, version ok, hash satisfies claimed PoW, 1 <= vtx count <= max, timestamp not in future
     BLOCK_VALID_HEADER       =    1,
-
     //! All parent headers found, difficulty matches, timestamp >= median previous, checkpoint. Implies all parents
     //! are also at least TREE.
     BLOCK_VALID_TREE         =    2,
-
     /**
      * Only first tx is coinbase, 2 <= coinbase input script length <= 100, transactions valid, no duplicate txids,
      * sigops, size, merkle root. Implies all parents are at least TREE but not necessarily TRANSACTIONS. When all
      * parent blocks also have TRANSACTIONS, CBlockIndex::nChainTx will be set.
      */
     BLOCK_VALID_TRANSACTIONS =    3,
-
     //! Outputs do not overspend inputs, no double spends, coinbase output ok, no immature coinbase spends, BIP30.
     //! Implies all parents are also at least CHAIN.
     BLOCK_VALID_CHAIN        =    4,
-
     //! Scripts & signatures ok. Implies all parents are also at least SCRIPTS.
     BLOCK_VALID_SCRIPTS      =    5,
-
     //! All validity bits.
     BLOCK_VALID_MASK         =   BLOCK_VALID_HEADER | BLOCK_VALID_TREE | BLOCK_VALID_TRANSACTIONS |
                                  BLOCK_VALID_CHAIN | BLOCK_VALID_SCRIPTS,
@@ -159,50 +153,37 @@ class CBlockIndex
 public:
     //! pointer to the hash of the block, if any. Memory is owned by this CBlockIndex
     const uint256* phashBlock;
-
     //! pointer to the index of the predecessor of this block
     CBlockIndex* pprev;
-
     //! pointer to the index of some further predecessor of this block
     CBlockIndex* pskip;
-
     //! height of the entry in the chain. The genesis block has height 0
     int nHeight;
-
     //! Which # file this block is stored in (blk?????.dat)
     int nFile;
-
     //! Byte offset within blk?????.dat where this block's data is stored
     unsigned int nDataPos;
-
     //! Byte offset within rev?????.dat where this block's undo data is stored
     unsigned int nUndoPos;
-
     //! (memory only) Total amount of work (expected number of hashes) in the chain up to and including this block
     arith_uint256 nChainWork;
-
     //! Number of transactions in this block.
     //! Note: in a potential headers-first mode, this number cannot be relied upon
     unsigned int nTx;
-
     //! (memory only) Number of transactions in the chain up to and including this block.
     //! This value will be non-zero only if and only if transactions for this block and all its parents are available.
     //! Change to 64-bit type when necessary; won't happen before 2030
     unsigned int nChainTx;
-
     //! Verification status of this block. See enum BlockStatus
     unsigned int nStatus;
-
     //! block header
     int nVersion;
     uint256 hashMerkleRoot;
     unsigned int nTime;
     unsigned int nBits;
     unsigned int nNonce;
-
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
     int32_t nSequenceId;
-
     //! (memory only) Maximum nTime in the chain upto and including this block.
     unsigned int nTimeMax;
 
