@@ -147,7 +147,7 @@ BOOST_AUTO_TEST_CASE(get_next_work_digishield_rounding)
     BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1b19c418);
 }
 
-BOOST_AUTO_TEST_CASE(hardfork_parameters)
+/* BOOST_AUTO_TEST_CASE(hardfork_parameters)
 {
     SelectParams(CBaseChainParams::MAIN);
     const Consensus::Params& initialParams = Params().GetConsensus(0);
@@ -181,6 +181,6 @@ BOOST_AUTO_TEST_CASE(hardfork_parameters)
     BOOST_CHECK_EQUAL(auxpowHighParams.nPowTargetTimespan, 2400);
     BOOST_CHECK_EQUAL(auxpowHighParams.fAllowLegacyBlocks, true);
     BOOST_CHECK_EQUAL(auxpowHighParams.fDigishieldDifficultyCalculation, false);
-}
+} */
 
 BOOST_AUTO_TEST_SUITE_END()

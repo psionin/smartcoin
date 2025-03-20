@@ -82,7 +82,6 @@ BITCOIN_CORE_H = \
   addrdb.h \
   addrman.h \
   alert.h \
-  auxpow.h \
   base58.h \
   bloom.h \
   blockencodings.h \
@@ -125,7 +124,6 @@ BITCOIN_CORE_H = \
   policy/rbf.h \
   pow.h \
   primitives/block.h \
-  primitives/pureheader.h \
   protocol.h \
   random.h \
   reverselock.h \
@@ -235,7 +233,6 @@ endif
 libsmartcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libsmartcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libsmartcoin_wallet_a_SOURCES = \
-  auxpow.cpp \
   wallet/crypter.cpp \
   wallet/db.cpp \
   wallet/rpcdump.cpp \
@@ -310,8 +307,6 @@ libsmartcoin_consensus_a_SOURCES = \
   prevector.h \
   primitives/block.cpp \
   primitives/block.h \
-  primitives/pureheader.cpp \
-  primitives/pureheader.h \
   primitives/transaction.cpp \
   primitives/transaction.h \
   pubkey.cpp \
@@ -338,7 +333,6 @@ libsmartcoin_common_a_SOURCES = \
   alert.cpp \
   amount.cpp \
   arith_uint256.cpp \
-  auxpow.cpp \
   base58.cpp \
   chainparams.cpp \
   coins.cpp \
@@ -350,7 +344,6 @@ libsmartcoin_common_a_SOURCES = \
   netaddress.cpp \
   netbase.cpp \
   primitives/block.cpp \
-  primitives/pureheader.cpp \
   primitives/transaction.cpp \
   protocol.cpp \
   scheduler.cpp \

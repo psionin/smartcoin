@@ -38,9 +38,8 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
 }
 
 /**
- * Build the genesis block. Note that the output of its generation
- * transaction cannot be spent since it did not originally exist in the
- * database.
+ * Build the genesis block. Note that the output of its generation transaction
+ * cannot be spent since it did not originally exist in the database.
  *
  * CBlock(hash=000000000019d6, ver=1, hashPrevBlock=00000000000000, hashMerkleRoot=4a5e1e, nTime=1386325540, nBits=0x1e0ffff0, nNonce=99943, vtx=1)
  *   CTransaction(hash=4a5e1e, ver=1, vin.size=1, vout.size=1, nLockTime=0)
@@ -53,6 +52,21 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
     const char* pszTimestamp = "5 reasons Big Block of Cheese Day Part IV could be a very bad idea";
     const CScript genesisOutputScript = CScript() << 0x0 << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
+}
+
+/**
+ * Use this method to find a nonce for the Genesis block that creates a hash which meets the powLimit target requirement.
+ */
+static void MineGenesisBlock(CBlock& genesis, const uint32_t& powBits) {
+    if (genesis.nBits > powBits)
+    {
+        std::cout << "Recalculating params for genesis block..." << std::endl;
+        // Iterate nonce and check hash until it is smaller than the target
+        for (genesis.nNonce = 0; genesis.nBits > powBits; genesis.nNonce++) { }
+        std::cout << "New genesis nonce: " << genesis.nNonce << std::endl;
+        std::cout << "New genesis hash: " << genesis.GetHash().ToString() << std::endl;
+        std::cout << "New genesis PoW hash: " << genesis.GetPoWHash().ToString() << std::endl;
+    }
 }
 
 /**
@@ -69,7 +83,7 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
 class CMainParams : public CChainParams {
 private:
     Consensus::Params digishieldConsensus;
-    Consensus::Params auxpowConsensus;
+    Consensus::Params ouroborosConsensus;
 public:
     CMainParams() {
         strNetworkID = "main";
@@ -85,6 +99,7 @@ public:
         consensus.X11ForkHeight = 289872; // 2 minute block spacing, X11
         consensus.fork3Height = 300000; // nSubsidy 16
         consensus.fork4Height = 385000; // DarkGravityWave
+        consensus.ouroborosHeight = 2926237; // Ouroboros
 
         consensus.BIP34Height = 1000000;
         consensus.BIP34Hash = uint256S("3bcf5c1125fd5b01ed7106d064dc02c5a5662b16f37f8d29bf9259a722a8c6ba");
@@ -95,7 +110,6 @@ public:
         consensus.nPowTargetSpacing = 40; // 40 seconds spacing
         consensus.fDigishieldDifficultyCalculation = false;
         consensus.fPowAllowMinDifficultyBlocks = false;
-        consensus.fAllowLegacyBlocks = true;
         consensus.fPowAllowDigishieldMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         
@@ -123,11 +137,6 @@ public:
         // By default assume that the signatures in ancestors of this block are valid
         consensus.defaultAssumeValid = uint256S("0xb343373a54c719686ac59c3f004ad8c5cbe1e7b9bbb3e2bafc404a697530d2bb"); // 2,500,000
 
-        // AuxPoW parameters
-        consensus.nAuxpowChainId = 0x0062; // 98 - Josh Wise!
-        consensus.fStrictChainId = false;
-        consensus.nHeightEffective = 0;
-
         // Blocks 145000 - 371336 are Digishield without AuxPoW
         digishieldConsensus = consensus;
         digishieldConsensus.nHeightEffective = 145000;
@@ -135,14 +144,15 @@ public:
         digishieldConsensus.nPowTargetTimespan = 60; // post-digishield: 1 minute
         digishieldConsensus.nCoinbaseMaturity = 240;
 
-        // Blocks 371337+ are AuxPoW
-        auxpowConsensus = digishieldConsensus;
-        auxpowConsensus.nHeightEffective = 371337;
-        auxpowConsensus.fAllowLegacyBlocks = true;
+        // Ouroboros parameters for the new SmartCoin mining system
+        ouroborosConsensus.nHeightEffective = 2926237;
+        ouroborosConsensus.nMinOuroborosCoinAge = 10 * 365 * 24 * 60 * 60;  // 10 years
+        ouroborosConsensus.nMinBlockSpacing = 60;           // 1 minute
+        ouroborosConsensus.nBlockReplacementWindow = 60;    // 1 minute
+        ouroborosConsensus.fRequireTransactions = true;
 
         // Assemble the binary search tree of consensus parameters
         digishieldConsensus.pLeft = &consensus;
-        digishieldConsensus.pRight = &auxpowConsensus;
         pConsensusRoot = &consensus;
 
         /**
@@ -161,7 +171,6 @@ public:
         genesis = CreateGenesisBlock(1390694380, 134632, 0x1e0ffff0, 1, 0);
         consensus.hashGenesisBlock = genesis.GetHash();
         //digishieldConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
-        //auxpowConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
         //assert(consensus.hashGenesisBlock == uint256S("0x142d2acd2480363e89fad37be56ff3b8993dd8da2be2525d75b02e202b0467a7"));
         //assert(genesis.hashMerkleRoot == uint256S("0xbc7cd78fd30e1ec47e66da50b6eedbaec8d95d01e68f58cb0b2c5e83e9cb8dd3"));
 
@@ -172,7 +181,7 @@ public:
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,63);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,176);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,191);
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x02)(0xfa)(0xca)(0xfd).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x02)(0xfa)(0xc3)(0x98).convert_to_container<std::vector<unsigned char> >();
 
@@ -212,7 +221,6 @@ static CMainParams mainParams;
 class CTestNetParams : public CChainParams {
 private:
     Consensus::Params digishieldConsensus;
-    Consensus::Params auxpowConsensus;
     Consensus::Params minDifficultyConsensus;
 public:
     CTestNetParams() {
@@ -237,7 +245,7 @@ public:
         consensus.BIP34Hash = uint256S("0x21b8b97dcdb94caa67c7f8f6dbf22e61e0cfe0e46e1fff3528b22864659e9b38");
         consensus.BIP65Height = 581885; // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         consensus.BIP66Height = 708658; // 21b8b97dcdb94caa67c7f8f6dbf22e61e0cfe0e46e1fff3528b22864659e9b38 - this is the last block that could be v2, 1900 blocks past the last v2 block
-        consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20;
+        consensus.powLimit = uint256S("0x000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20;
         consensus.nPowTargetTimespan = 4 * 60 * 60; // pre-digishield: 4 hours
         consensus.nPowTargetSpacing = 60; // 1 minute
         consensus.fPowNoRetargeting = false;
@@ -264,12 +272,6 @@ public:
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x6943eaeaba98dc7d09f7e73398daccb4abcabb18b66c8c875e52b07638d93951"); // 900,000
 
-        // AuxPoW parameters
-        consensus.nAuxpowChainId = 0x0062; // 98 - Josh Wise!
-        consensus.fStrictChainId = false;
-        consensus.nHeightEffective = 1000;
-        consensus.fAllowLegacyBlocks = true;
-
         // Blocks 145000 - 157499 are Digishield without minimum difficulty on all blocks
         digishieldConsensus = consensus;
         digishieldConsensus.nHeightEffective = 145000;
@@ -284,17 +286,10 @@ public:
         minDifficultyConsensus.fPowAllowDigishieldMinDifficultyBlocks = true;
         minDifficultyConsensus.fPowAllowMinDifficultyBlocks = true;
 
-        // Enable AuxPoW at 158100
-        auxpowConsensus = minDifficultyConsensus;
-        auxpowConsensus.nHeightEffective = 158100;
-        auxpowConsensus.fPowAllowDigishieldMinDifficultyBlocks = true;
-        auxpowConsensus.fAllowLegacyBlocks = true;
-
         // Assemble the binary search tree of parameters
         pConsensusRoot = &digishieldConsensus;
         digishieldConsensus.pLeft = &consensus;
         digishieldConsensus.pRight = &minDifficultyConsensus;
-        minDifficultyConsensus.pRight = &auxpowConsensus;
 
         pchMessageStart[0] = 0xfc;
         pchMessageStart[1] = 0xc1;
@@ -304,41 +299,33 @@ public:
         nDefaultPort = 8585;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1740721211, 18711240, 0x1e0ffff0, 1, 10000 * COIN);
+        genesis = CreateGenesisBlock(1740721211, 187521, 0x1e0ffff0, 1, 10000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         //digishieldConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
         minDifficultyConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
-        //auxpowConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
-        // print out the genesis block info
-        //std::cout << "Genesis Block Hash: " << consensus.hashGenesisBlock.ToString() << std::endl;
-        //std::cout << "Gnesis PoW hash: " << genesis.GetPoWHash().ToString() << std::endl;
-        //std::cout << "Merkle Root Hash: " << genesis.hashMerkleRoot.ToString() << std::endl;
-        //std::cout << "Genesis timestamp: " << genesis.nTime << std::endl;
-        assert(consensus.hashGenesisBlock == uint256S("4a97e84016438b8a88c2073a717be7abb27239b4a81e9f9bfcb710bb6f3d7452"));
-        assert(genesis.hashMerkleRoot == uint256S("f1f8b420ff472229611f9d4e6119edf82e5b55ab1525d83e21dcd35fddb0cc01"));
 
-        /* std::string targetHash = "000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-        if (genesis.GetPoWHash().ToString() > targetHash)
-        {
-            std::cout << "Recalculating params for genesis block..." << std::endl;
-            std::cout << "Old genesis nonce: " << genesis.nNonce << std::endl;
-            std::cout << "Old genesis hash: " << genesis.GetHash().ToString() << std::endl;
-            std::cout << "Old genesis PoW hash: " << genesis.GetPoWHash().ToString() << std::endl;
-            // iterate nonce and check hash until it is smaller than the target
-            for (genesis.nNonce = 0; genesis.GetPoWHash().ToString() > targetHash; genesis.nNonce++) { }
-            std::cout << "New genesis nonce: " << genesis.nNonce << std::endl;
-            std::cout << "New genesis hash: " << genesis.GetHash().ToString() << std::endl;
-            std::cout << "New genesis PoW hash: " << genesis.GetPoWHash().ToString() << std::endl;
-        } */
+        if (genesis.nBits > consensus.GetPoWBits()) {
+            // The genesis block PoW hash doesn't meet the bare minimum proof-of-work requirement
+            // Mine a new block and replace the asserted hashes below to proceed with initialization
+            std::cout << "Genesis hash: " << genesis.GetHash().ToString() << std::endl;
+            std::cout << "Genesis PoW hash: " << genesis.GetPoWHash().ToString() << std::endl;
+            std::cout << "Genesis merkle root hash: " << genesis.hashMerkleRoot.ToString() << std::endl;
+            std::cout << "Genesis timestamp: " << genesis.nTime << std::endl;
+            std::cout << "Genesis nonce: " << genesis.nNonce << std::endl;
+            MineGenesisBlock(genesis, consensus.GetPoWBits());
+        }
+
+        assert(consensus.hashGenesisBlock == uint256S("ae75222239921eb2139524686cd34fcdf65fff39813839365ebb945090215a4a"));
+        assert(genesis.hashMerkleRoot == uint256S("f1f8b420ff472229611f9d4e6119edf82e5b55ab1525d83e21dcd35fddb0cc01"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        // nodes with support for servicebits filtering should be at the top
+        // Nodes with support for servicebits filtering should be at the top
         //vSeeds.push_back(CDNSSeedData("jrn.me.uk", "testseed.jrn.me.uk"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,113); // 0x71
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111); // 0x71
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196); // 0xc4
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,241); // 0xf1
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239); // 0xf1
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xcf).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
@@ -367,6 +354,10 @@ public:
             1000 // * estimated number of transactions per day after checkpoint
         };
 
+        // Ouroboros parameters for testnet
+        consensus.nMinBlockSpacing = 60;
+        consensus.nBlockReplacementWindow = 60;
+        consensus.nMinOuroborosCoinAge = 60 * 60;  // 1 hour for testing
     }
 };
 static CTestNetParams testNetParams;
@@ -377,7 +368,6 @@ static CTestNetParams testNetParams;
 class CRegTestParams : public CChainParams {
 private:
     Consensus::Params digishieldConsensus;
-    Consensus::Params auxpowConsensus;
 public:
     CRegTestParams() {
         strNetworkID = "regtest";
@@ -413,26 +403,15 @@ public:
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x00");
 
-        // AuxPow parameters
-        consensus.nAuxpowChainId = 0x0062; // 98 - Josh Wise!
-        consensus.fStrictChainId = true;
-        consensus.fAllowLegacyBlocks = true;
-
-        // Dogecoin parameters
-        consensus.nCoinbaseMaturity = 60; // For easier testability in RPC tests
+        consensus.nCoinbaseMaturity = 15;
 
         digishieldConsensus = consensus;
         digishieldConsensus.nHeightEffective = 10;
         digishieldConsensus.nPowTargetTimespan = 1; // regtest: also retarget every second in digishield mode, for conformity
         digishieldConsensus.fDigishieldDifficultyCalculation = true;
 
-        auxpowConsensus = digishieldConsensus;
-        auxpowConsensus.fAllowLegacyBlocks = true;
-        auxpowConsensus.nHeightEffective = 20;
-
         // Assemble the binary search tree of parameters
         digishieldConsensus.pLeft = &consensus;
-        digishieldConsensus.pRight = &auxpowConsensus;
         pConsensusRoot = &digishieldConsensus;
 
         pchMessageStart[0] = 0xfa;
@@ -445,7 +424,6 @@ public:
         genesis = CreateGenesisBlock(1296688602, 2, 0x207fffff, 1, 88 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         digishieldConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
-        auxpowConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
         //assert(consensus.hashGenesisBlock == uint256S("0x3d2160a3b5dc4a9d62e7e66a295f70313ac808440ef7400d6c0772171ce973a5"));
         //assert(genesis.hashMerkleRoot == uint256S("0x5b2a3f53f605d62c53e62932dac6925e3d74afa5a4b459745c36d42d0ed26a69"));
 
@@ -473,6 +451,11 @@ public:
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);  // 0xef
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
+
+        // Ouroboros parameters for regtest
+        consensus.nMinBlockSpacing = 1;            // 1 second for testing
+        consensus.nBlockReplacementWindow = 60;
+        consensus.nMinOuroborosCoinAge = 300;        // 5 minutes for testing
     }
 
     void UpdateBIP9Parameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout)

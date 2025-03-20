@@ -4,7 +4,6 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "pow.h"
-#include "auxpow.h"
 #include "arith_uint256.h"
 #include "chain.h"
 #include "primitives/block.h"

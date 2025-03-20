@@ -19,7 +19,6 @@
 #include "policy/policy.h"
 #include "pow.h"
 #include "primitives/block.h"
-#include "primitives/pureheader.h"
 #include "primitives/transaction.h"
 #include "random.h"
 #include "script/script.h"
@@ -1143,8 +1142,7 @@ bool WriteBlockToDisk(const CBlock& block, CDiskBlockPos& pos, const CMessageHea
 /* Generic implementation of block reading that can handle
    both a block and its header.  */
 
-template<typename T>
-static bool ReadBlockOrHeader(T& block, const CDiskBlockPos& pos, const Consensus::Params& consensusParams)
+bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus::Params& consensusParams)
 {
     block.SetNull();
 
@@ -1168,30 +1166,14 @@ static bool ReadBlockOrHeader(T& block, const CDiskBlockPos& pos, const Consensu
     return true;
 }
 
-template<typename T>
-static bool ReadBlockOrHeader(T& block, const CBlockIndex* pindex, const Consensus::Params& consensusParams)
-{
-    if (!ReadBlockOrHeader(block, pindex->GetBlockPos(), consensusParams))
-        return false;
-    if (block.GetHash() != pindex->GetBlockHash())
-        return error("ReadBlockOrHeader(CBlock&, CBlockIndex*): GetHash() doesn't match index for %s at %s",
-                pindex->ToString(), pindex->GetBlockPos().ToString());
-    return true;
-}
-
-bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus::Params& consensusParams)
-{
-    return ReadBlockOrHeader(block, pos, consensusParams);
-}
-
 bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus::Params& consensusParams)
 {
-    return ReadBlockOrHeader(block, pindex, consensusParams);
-}
-
-bool ReadBlockHeaderFromDisk(CBlockHeader& block, const CBlockIndex* pindex, const Consensus::Params& consensusParams)
-{
-    return ReadBlockOrHeader(block, pindex, consensusParams);
+    if (!ReadBlockFromDisk(block, pindex->GetBlockPos(), consensusParams))
+        return false;
+    if (block.GetHash() != pindex->GetBlockHash())
+        return error("ReadBlockFromDisk(CBlock&, CBlockIndex*): GetHash() doesn't match index for %s at %s",
+                pindex->ToString(), pindex->GetBlockPos().ToString());
+    return true;
 }
 
 // From Litecoin, not used
@@ -1926,7 +1908,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
 
     // Start enforcing CHECKLOCKTIMEVERIFY, (BIP65) for block.nVersion=4
     // blocks, when 75% of the network has upgraded:
-    if (block.GetBaseVersion() >= 4 && IsSuperMajority(4, pindex->pprev, chainparams.GetConsensus(0).nMajorityEnforceBlockUpgrade, chainparams.GetConsensus(0))) {
+    if (block.nVersion >= 4 && IsSuperMajority(4, pindex->pprev, chainparams.GetConsensus(0).nMajorityEnforceBlockUpgrade, chainparams.GetConsensus(0))) {
         flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
     }
 
@@ -2233,7 +2215,7 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams& chainParams) {
         for (int i = 0; i < 100 && pindex != NULL; i++)
         {
             int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus(pindex->nHeight));
-            if (pindex->GetBaseVersion() > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->GetBaseVersion() & ~nExpectedVersion) != 0)
+            if (pindex->nVersion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->nVersion & ~nExpectedVersion) != 0)
                 ++nUpgraded;
             pindex = pindex->pprev;
         }
@@ -3076,20 +3058,6 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     const int nHeight = pindexPrev == NULL ? 0 : pindexPrev->nHeight + 1;
     const Consensus::Params& consensusParams = Params().GetConsensus(nHeight);
 
-    // Disallow legacy blocks after merge-mining start.
-    if (!consensusParams.fAllowLegacyBlocks && block.IsLegacy())
-        return state.DoS(100, error("%s : legacy block after auxpow start",
-                __func__),
-                         REJECT_INVALID, "late-legacy-block");
-
-    // Dogecoin: Disallow AuxPow blocks before it is activated.
-    // TODO: Remove this test, as checkpoints will enforce this for us now
-    // NOTE: Previously this had its own fAllowAuxPoW flag, but that's always the opposite of fAllowLegacyBlocks
-    if (consensusParams.fAllowLegacyBlocks && block.IsAuxpow())
-        return state.DoS(100, error("%s : auxpow blocks are not allowed at height %d, parameters effective from %d",
-                __func__, pindexPrev->nHeight + 1, consensusParams.nHeightEffective),
-                         REJECT_INVALID, "early-auxpow-block");
-
     // Check proof of work
     if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams)) {
         LogPrintf("CheckPoW: block.nBits: %08x != GetNextWorkRequired: %08x\n", block.nBits, GetNextWorkRequired(pindexPrev, &block, consensusParams));
@@ -3106,15 +3074,15 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 
     // Reject outdated version blocks when 95% (75% on testnet) of the network has upgraded:
     // check for version 2, 3 and 4 upgrades
-    // Dogecoin: Version 2 enforcement was never used
-    //if((block.GetBaseVersion() < 3 && nHeight >= consensusParams.BIP66Height))
-    //        return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x)", block.GetBaseVersion()),
-    //                             strprintf("rejected nVersion=0x%08x block", block.GetBaseVersion()));
+    /* if((block.nVersion < 2 && nHeight >= consensusParams.BIP34Height) ||
+       (block.nVersion < 3 && nHeight >= consensusParams.BIP66Height) ||
+       (block.nVersion < 4 && nHeight >= consensusParams.BIP65Height))
+            return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x)", block.nVersion),
+                                 strprintf("rejected nVersion=0x%08x block", block.nVersion));
 
-    // Dogecoin: Introduce supermajority rules for v4 blocks
-    //if (block.GetBaseVersion() < 4 && IsSuperMajority(4, pindexPrev, consensusParams.nMajorityRejectBlockOutdated, consensusParams))
-    //    return state.Invalid(error("%s : rejected nVersion=3 block", __func__),
-    //                         REJECT_OBSOLETE, "bad-version");
+    if (block.nVersion < VERSIONBITS_TOP_BITS && IsWitnessEnabled(pindexPrev, consensusParams))
+        return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x)", block.nVersion),
+                                 strprintf("rejected nVersion=0x%08x block", block.nVersion)); */
 
     return true;
 }
@@ -3359,7 +3327,7 @@ static bool IsSuperMajority(int minVersion, const CBlockIndex* pstart, unsigned 
     unsigned int nFound = 0;
     for (int i = 0; i < consensusParams.nMajorityWindow && nFound < nRequired && pstart != NULL; i++)
     {
-        if (pstart->GetBaseVersion() >= minVersion)
+        if (pstart->nVersion >= minVersion)
             ++nFound;
         pstart = pstart->pprev;
     }

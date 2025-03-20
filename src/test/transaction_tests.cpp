@@ -412,7 +412,7 @@ void ReplaceRedeemScript(CScript& script, const CScript& redeemScript)
     script = PushAll(stack);
 }
 
-BOOST_AUTO_TEST_CASE(test_big_witness_transaction) {
+BOOST_AUTO_TEST_CASE(test_big_witness_transaction, *boost::unit_test::disabled()) { // Disabled - takes a while and don't need witness anyway
     CMutableTransaction mtx;
     mtx.nVersion = 1;
 

@@ -5,21 +5,30 @@
 
 #include "primitives/block.h"
 
+#include "crypto/common.h"
+#include "crypto/scrypt.h"
 #include "hash.h"
+#include "streams.h"
 #include "tinyformat.h"
 #include "utilstrencodings.h"
-#include "crypto/common.h"
 
-void CBlockHeader::SetAuxpow (CAuxPow* apow)
+uint256 CBlockHeader::GetHash() const
 {
-    if (apow)
-    {
-        auxpow.reset(apow);
-        SetAuxpowFlag(true);
-    } else
-    {
-        auxpow.reset();
-        SetAuxpowFlag(false);
+    return SerializeHash(*this);
+}
+
+uint256 CBlockHeader::GetPoWHash() const
+{
+    if (nTime > 1406160000 && nTime < 1721779200) { // July 24 2014 12:00:00 AM UTC, X11 fork - but let's go back to Scrypt for relaunch
+        std::vector<unsigned char> vch(80);
+        CVectorWriter ss(SER_NETWORK, PROTOCOL_VERSION, vch, 0);
+        ss << *this;
+        return Hash11((const char *)vch.data(), (const char *)vch.data() + vch.size());
+    }
+    else {
+        uint256 thash;
+        scrypt_1024_1_1_256(BEGIN(nVersion), BEGIN(thash));
+        return thash;
     }
 }
 

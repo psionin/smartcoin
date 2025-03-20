@@ -6,6 +6,7 @@
 #ifndef BITCOIN_CONSENSUS_PARAMS_H
 #define BITCOIN_CONSENSUS_PARAMS_H
 
+#include "arith_uint256.h"
 #include "uint256.h"
 #include <map>
 #include <string>
@@ -50,6 +51,7 @@ struct Params {
     int X11ForkHeight;
     int fork3Height;
     int fork4Height;
+    int ouroborosHeight;
     /** Block height and hash at which BIP34 becomes active */
     int BIP34Height;
     uint256 BIP34Hash;
@@ -68,11 +70,13 @@ struct Params {
     uint32_t nCoinbaseMaturity;
     /** Proof of work parameters */
     uint256 powLimit;
+    uint32_t GetPoWBits() const { return UintToArith256(powLimit).GetCompact(); }
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     int64_t nPowTargetSpacing;
     int64_t nPowTargetTimespan;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
+    bool MineX11(int nHeight) const { return nHeight >= X11ForkHeight && nHeight < ouroborosHeight; }
 
     /** Dogecoin-specific parameters */
     bool fDigishieldDifficultyCalculation;
@@ -81,13 +85,14 @@ struct Params {
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
 
-    /** Auxpow parameters */
-    int32_t nAuxpowChainId;
-    bool fStrictChainId;
-    bool fAllowLegacyBlocks;
-
-    /** X11 fork */
-    bool mineX11;
+    /** Required age of coins for ouroboros consumption (in seconds) */
+    int64_t nMinOuroborosCoinAge;
+    /** Minimum time between blocks (in seconds) */
+    int64_t nMinBlockSpacing;
+    /** Time window for block replacements (in seconds) */
+    int64_t nBlockReplacementWindow;
+    /** Require transactions to mine a block (prevent empty blocks) */
+    bool fRequireTransactions;
 
     /** Height-aware consensus parameters */
     uint32_t nHeightEffective; // When these parameters come into use
