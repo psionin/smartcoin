@@ -122,14 +122,15 @@ db-4.8.30.NC/
 db4/
 
 config.sh
-src/univalue/configure~
 configure~
+src/univalue/configure~
 
-assistant/
 doxygen/
 Doxyfile
 
-MINING_CHANGES.md
+assistant/
 .cursor/
 
 python/
+
+wallet.backup
