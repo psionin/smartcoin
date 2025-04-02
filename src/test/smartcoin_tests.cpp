@@ -147,6 +147,7 @@ BOOST_AUTO_TEST_CASE(get_next_work_digishield_rounding)
     BOOST_CHECK_EQUAL(CalculateNextWorkRequired(&pindexLast, nLastRetargetTime, params), 0x1b19c418);
 }
 
+// TODO for SmartCoin forks
 /* BOOST_AUTO_TEST_CASE(hardfork_parameters)
 {
     SelectParams(CBaseChainParams::MAIN);

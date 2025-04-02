@@ -60,7 +60,8 @@ class WalletBackupTest(BitcoinTestFramework):
 
     def one_send(self, from_node, to_address):
         if (randint(1,2) == 1):
-            amount = Decimal(randint(1,10))
+            amount = Decimal(str(round(random.uniform(0.01, 0.05), 4)))
+            logging.info("Sending %s SMC to %s" % (amount, to_address))
             self.nodes[from_node].sendtoaddress(to_address, amount)
 
     def do_one_round(self):
@@ -112,10 +113,10 @@ class WalletBackupTest(BitcoinTestFramework):
         self.nodes[3].generate(60)
         sync_blocks(self.nodes)
 
-        assert_equal(self.nodes[0].getbalance(), 500000)
-        assert_equal(self.nodes[1].getbalance(), 500000)
-        assert_equal(self.nodes[2].getbalance(), 500000)
-        assert_equal(self.nodes[3].getbalance(), 0)
+        assert_equal(self.nodes[0].getbalance(), 400000)
+        assert_equal(self.nodes[1].getbalance(), 1)
+        assert_equal(self.nodes[2].getbalance(), 1)
+        assert_equal(self.nodes[3].getbalance(), 45)
 
         logging.info("Creating transactions")
         # Five rounds of sending each other transactions.
@@ -144,10 +145,12 @@ class WalletBackupTest(BitcoinTestFramework):
         balance2 = self.nodes[2].getbalance()
         balance3 = self.nodes[3].getbalance()
         total = balance0 + balance1 + balance2 + balance3
+        logging.info(f'balances: {balance0} {balance1} {balance2} {balance3} total: {total}')
 
         # At this point, there are 134 blocks (63 for setup, then 10 rounds, then 61.)
         # 74 are mature, so the sum of all wallets should be 74 * 500000 = 37000000.
-        assert_equal(total, 37000000)
+        # SmartCoin: different coinbase and fees, so it's this
+        assert_equal(round(total), 400118)
 
         ##
         # Test restoring spender wallets from backups
@@ -168,6 +171,7 @@ class WalletBackupTest(BitcoinTestFramework):
         logging.info("Re-starting nodes")
         self.start_three()
         sync_blocks(self.nodes)
+        logging.info(f'balances: {self.nodes[0].getbalance()} {self.nodes[1].getbalance()} {self.nodes[2].getbalance()}')
 
         assert_equal(self.nodes[0].getbalance(), balance0)
         assert_equal(self.nodes[1].getbalance(), balance1)

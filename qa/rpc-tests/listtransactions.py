@@ -57,35 +57,35 @@ class ListTransactionsTest(BitcoinTestFramework):
                            {"amount":200})
 
         # sendmany from node1: twice to self, twice to node2:
-        send_to = { self.nodes[0].getnewaddress() : 110,
-                    self.nodes[1].getnewaddress() : 220,
-                    self.nodes[0].getaccountaddress("from1") : 330,
-                    self.nodes[1].getaccountaddress("toself") : 440 }
+        send_to = { self.nodes[0].getnewaddress() : 1.1,
+                    self.nodes[1].getnewaddress() : 2.2,
+                    self.nodes[0].getaccountaddress("from1") : 3.3,
+                    self.nodes[1].getaccountaddress("toself") : 4.4 }
         txid = self.nodes[1].sendmany("", send_to)
         self.sync_all()
         assert_array_result(self.nodes[1].listtransactions(),
-                           {"category":"send","amount":Decimal("-110")},
+                           {"category":"send","amount":Decimal("-1.1")},
                            {"txid":txid} )
         assert_array_result(self.nodes[0].listtransactions(),
-                           {"category":"receive","amount":Decimal("110")},
+                           {"category":"receive","amount":Decimal("1.1")},
                            {"txid":txid} )
         assert_array_result(self.nodes[1].listtransactions(),
-                           {"category":"send","amount":Decimal("-220")},
+                           {"category":"send","amount":Decimal("-2.2")},
                            {"txid":txid} )
         assert_array_result(self.nodes[1].listtransactions(),
-                           {"category":"receive","amount":Decimal("220")},
+                           {"category":"receive","amount":Decimal("2.2")},
                            {"txid":txid} )
         assert_array_result(self.nodes[1].listtransactions(),
-                           {"category":"send","amount":Decimal("-330")},
+                           {"category":"send","amount":Decimal("-3.3")},
                            {"txid":txid} )
         assert_array_result(self.nodes[0].listtransactions(),
-                           {"category":"receive","amount":Decimal("330")},
+                           {"category":"receive","amount":Decimal("3.3")},
                            {"txid":txid, "account" : "from1"} )
         assert_array_result(self.nodes[1].listtransactions(),
-                           {"category":"send","amount":Decimal("-440")},
+                           {"category":"send","amount":Decimal("-4.4")},
                            {"txid":txid, "account" : ""} )
         assert_array_result(self.nodes[1].listtransactions(),
-                           {"category":"receive","amount":Decimal("440")},
+                           {"category":"receive","amount":Decimal("4.4")},
                            {"txid":txid, "account" : "toself"} )
 
         multisig = self.nodes[1].createmultisig(1, [self.nodes[1].getnewaddress()])
@@ -131,7 +131,7 @@ class ListTransactionsTest(BitcoinTestFramework):
 
         # Create tx2 using createrawtransaction
         inputs = [{"txid":utxo_to_use["txid"], "vout":utxo_to_use["vout"]}]
-        outputs = {self.nodes[0].getnewaddress(): 99}
+        outputs = {self.nodes[0].getnewaddress(): 99.999}
         tx2 = self.nodes[1].createrawtransaction(inputs, outputs)
         tx2_signed = self.nodes[1].signrawtransaction(tx2)["hex"]
         txid_2 = self.nodes[1].sendrawtransaction(tx2_signed)
@@ -145,7 +145,7 @@ class ListTransactionsTest(BitcoinTestFramework):
         # Tx3 will opt-in to RBF
         utxo_to_use = get_unconfirmed_utxo_entry(self.nodes[0], txid_2)
         inputs = [{"txid": txid_2, "vout":utxo_to_use["vout"]}]
-        outputs = {self.nodes[1].getnewaddress(): 98}
+        outputs = {self.nodes[1].getnewaddress(): 99.998}
         tx3 = self.nodes[0].createrawtransaction(inputs, outputs)
         tx3_modified = txFromHex(tx3)
         tx3_modified.vin[0].nSequence = 0
@@ -162,7 +162,7 @@ class ListTransactionsTest(BitcoinTestFramework):
         # that does.
         utxo_to_use = get_unconfirmed_utxo_entry(self.nodes[1], txid_3)
         inputs = [{"txid": txid_3, "vout":utxo_to_use["vout"]}]
-        outputs = {self.nodes[0].getnewaddress(): 97}
+        outputs = {self.nodes[0].getnewaddress(): 99.997}
         tx4 = self.nodes[1].createrawtransaction(inputs, outputs)
         tx4_signed = self.nodes[1].signrawtransaction(tx4)["hex"]
         txid_4 = self.nodes[1].sendrawtransaction(tx4_signed)

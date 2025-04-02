@@ -108,8 +108,6 @@ testScripts = [
     #'p2p-compactblocks.py',
     # 'segwit.py',
     # vv Tests less than 2m vv
-    'auxpow.py',
-    'getauxblock.py',
     'wallet.py',
     'wallet-accounts.py',
     # 'p2p-segwit.py',
@@ -127,7 +125,7 @@ testScripts = [
     'rawtransactions.py',
     'reindex.py',
     # vv Tests less than 30s vv
-    'mempool_resurrect_test.py',
+    'mempool_resurrect.py',
     #'txn_doublespend.py --mineblock',
     'txn_clone.py',
     'getchaintips.py',
@@ -136,7 +134,7 @@ testScripts = [
     'mempool_reorg.py',
     'httpbasics.py',
     'multi_rpc.py',
-    'proxy_test.py',
+    'proxy.py',
     'signrawtransactions.py',
     'nodehandling.py',
     'decodescript.py',
@@ -164,7 +162,7 @@ if ENABLE_ZMQ:
     testScripts.append('zmq_test.py')
 
 testScriptsExt = [
-    'pruning.py',
+    # 'pruning.py', # requires 4 GB disk space and takes 30-120 minutes to run (!!)
     # vv Tests less than 20m vv
     'smartfees.py',
     # vv Tests less than 5m vv

@@ -16,7 +16,7 @@ class AbandonConflictTest(BitcoinTestFramework):
 
     def setup_network(self):
         self.nodes = []
-        self.nodes.append(start_node(0, self.options.tmpdir, ["-debug","-logtimemicros","-minrelaytxfee=1"]))
+        self.nodes.append(start_node(0, self.options.tmpdir, ["-debug","-logtimemicros","-minrelaytxfee=0.001"]))
         self.nodes.append(start_node(1, self.options.tmpdir, ["-debug","-logtimemicros"]))
         connect_nodes(self.nodes[0], 1)
 
@@ -32,50 +32,50 @@ class AbandonConflictTest(BitcoinTestFramework):
 
         sync_blocks(self.nodes)
         newbalance = self.nodes[0].getbalance()
-        assert(balance - newbalance <= Decimal("3")) #no more than fees lost
+        assert(balance - newbalance <= Decimal("0.01")) # No more than fees lost
         balance = newbalance
 
         url = urllib.parse.urlparse(self.nodes[1].url)
         self.nodes[0].disconnectnode(url.hostname+":"+str(p2p_port(1)))
 
-        # Identify the 10btc outputs
+        # Identify the 10 SMC outputs
         nA = next(i for i, vout in enumerate(self.nodes[0].getrawtransaction(txA, 1)["vout"]) if vout["value"] == Decimal("10"))
         nB = next(i for i, vout in enumerate(self.nodes[0].getrawtransaction(txB, 1)["vout"]) if vout["value"] == Decimal("10"))
         nC = next(i for i, vout in enumerate(self.nodes[0].getrawtransaction(txC, 1)["vout"]) if vout["value"] == Decimal("10"))
 
         inputs =[]
-        # spend 10btc outputs from txA and txB
+        # Spend 10 SMC outputs from txA and txB
         inputs.append({"txid":txA, "vout":nA})
         inputs.append({"txid":txB, "vout":nB})
         outputs = {}
 
-        outputs[self.nodes[0].getnewaddress()] = Decimal("14")
+        outputs[self.nodes[0].getnewaddress()] = Decimal("14.999")
         outputs[self.nodes[1].getnewaddress()] = Decimal("5")
         signed = self.nodes[0].signrawtransaction(self.nodes[0].createrawtransaction(inputs, outputs))
         txAB1 = self.nodes[0].sendrawtransaction(signed["hex"])
 
-        # Identify the 14.99998btc output
-        nAB = next(i for i, vout in enumerate(self.nodes[0].getrawtransaction(txAB1, 1)["vout"]) if vout["value"] == Decimal("14"))
+        # Identify the 14.999 SMC output
+        nAB = next(i for i, vout in enumerate(self.nodes[0].getrawtransaction(txAB1, 1)["vout"]) if vout["value"] == Decimal("14.999"))
 
-        #Create a child tx spending AB1 and C
+        # Create a child tx spending AB1 and C
         inputs = []
         inputs.append({"txid":txAB1, "vout":nAB})
         inputs.append({"txid":txC, "vout":nC})
         outputs = {}
-        outputs[self.nodes[0].getnewaddress()] = Decimal("23")
+        outputs[self.nodes[0].getnewaddress()] = Decimal("24.998")
         signed2 = self.nodes[0].signrawtransaction(self.nodes[0].createrawtransaction(inputs, outputs))
         txABC2 = self.nodes[0].sendrawtransaction(signed2["hex"])
 
         # In mempool txs from self should increase balance from change
         newbalance = self.nodes[0].getbalance()
-        assert_equal(newbalance, balance - Decimal("30") + Decimal("23"))
+        assert_equal(newbalance, balance - Decimal("30") + Decimal("24.998"))
         balance = newbalance
 
         # Restart the node with a higher min relay fee so the parent tx is no longer in mempool
         # TODO: redo with eviction
         # Note had to make sure tx did not have AllowFree priority
         stop_node(self.nodes[0],0)
-        self.nodes[0]=start_node(0, self.options.tmpdir, ["-debug","-logtimemicros","-minrelaytxfee=5"])
+        self.nodes[0]=start_node(0, self.options.tmpdir, ["-debug","-logtimemicros","-minrelaytxfee=0.01"])
 
         # Verify txs no longer in mempool
         assert_equal(len(self.nodes[0].getrawmempool()), 0)
@@ -83,7 +83,7 @@ class AbandonConflictTest(BitcoinTestFramework):
         # Not in mempool txs from self should only reduce balance
         # inputs are still spent, but change not received
         newbalance = self.nodes[0].getbalance()
-        assert_equal(newbalance, balance - Decimal("23"))
+        assert_equal(newbalance, balance - Decimal("24.998"))
         # Unconfirmed received funds that are not in mempool, also shouldn't show
         # up in unconfirmed balance
         unconfbalance = self.nodes[0].getunconfirmedbalance() + self.nodes[0].getbalance()
@@ -101,7 +101,7 @@ class AbandonConflictTest(BitcoinTestFramework):
 
         # Verify that even with a low min relay fee, the tx is not reaccepted from wallet on startup once abandoned
         stop_node(self.nodes[0],0)
-        self.nodes[0]=start_node(0, self.options.tmpdir, ["-debug","-logtimemicros","-minrelaytxfee=1"])
+        self.nodes[0]=start_node(0, self.options.tmpdir, ["-debug","-logtimemicros","-minrelaytxfee=0.001"])
         assert_equal(len(self.nodes[0].getrawmempool()), 0)
         assert_equal(self.nodes[0].getbalance(), balance)
 
@@ -110,29 +110,29 @@ class AbandonConflictTest(BitcoinTestFramework):
         # But its child tx remains abandoned
         self.nodes[0].sendrawtransaction(signed["hex"])
         newbalance = self.nodes[0].getbalance()
-        assert_equal(newbalance, balance - Decimal("20") + Decimal("14"))
+        assert_equal(newbalance, balance - Decimal("20") + Decimal("14.999"))
         balance = newbalance
 
         # Send child tx again so its unabandoned
         self.nodes[0].sendrawtransaction(signed2["hex"])
         newbalance = self.nodes[0].getbalance()
-        assert_equal(newbalance, balance - Decimal("10") - Decimal("14") + Decimal("23"))
+        assert_equal(newbalance, balance - Decimal("10") - Decimal("14.999") + Decimal("24.998"))
         balance = newbalance
 
         # Remove using high relay fee again
         stop_node(self.nodes[0],0)
-        self.nodes[0]=start_node(0, self.options.tmpdir, ["-debug","-logtimemicros","-minrelaytxfee=5"])
+        self.nodes[0]=start_node(0, self.options.tmpdir, ["-debug","-logtimemicros","-minrelaytxfee=0.01"])
         assert_equal(len(self.nodes[0].getrawmempool()), 0)
         newbalance = self.nodes[0].getbalance()
-        assert_equal(newbalance, balance - Decimal("23"))
+        assert_equal(newbalance, balance - Decimal("24.998"))
         balance = newbalance
 
-        # Create a double spend of AB1 by spending again from only A's 10 output
+        # Create a double spend of AB1 by spending again from only A's 10 SMC output
         # Mine double spend from node 1
         inputs =[]
         inputs.append({"txid":txA, "vout":nA})
         outputs = {}
-        outputs[self.nodes[1].getnewaddress()] = Decimal("9")
+        outputs[self.nodes[1].getnewaddress()] = Decimal("9.999")
         tx = self.nodes[0].createrawtransaction(inputs, outputs)
         signed = self.nodes[0].signrawtransaction(tx)
         self.nodes[1].sendrawtransaction(signed["hex"])
@@ -141,13 +141,13 @@ class AbandonConflictTest(BitcoinTestFramework):
         connect_nodes(self.nodes[0], 1)
         sync_blocks(self.nodes)
 
-        # Verify that B and C's 10 BTC outputs are available for spending again because AB1 is now conflicted
+        # Verify that B and C's 10 SMC outputs are available for spending again because AB1 is now conflicted
         newbalance = self.nodes[0].getbalance()
         assert_equal(newbalance, balance + Decimal("20"))
         balance = newbalance
 
         # There is currently a minor bug around this and so this test doesn't work.  See Issue #7315
-        # Invalidate the block with the double spend and B's 10 BTC output should no longer be available
+        # Invalidate the block with the double spend and B's 10 SMC output should no longer be available
         # Don't think C's should either
         self.nodes[0].invalidateblock(self.nodes[0].getbestblockhash())
         newbalance = self.nodes[0].getbalance()

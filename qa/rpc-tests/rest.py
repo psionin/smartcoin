@@ -7,8 +7,6 @@
 # Test REST interface
 #
 
-
-from test_framework import scrypt_auxpow as auxpow
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 from struct import *
@@ -70,7 +68,7 @@ class RESTTest (BitcoinTestFramework):
         self.nodes[2].generate(100)
         self.sync_all()
 
-        assert_equal(self.nodes[0].getbalance(), 500000)
+        assert_equal(self.nodes[0].getbalance(), 400000)
 
         txid = self.nodes[0].sendtoaddress(self.nodes[1].getnewaddress(), 1)
         self.sync_all()
@@ -204,8 +202,8 @@ class RESTTest (BitcoinTestFramework):
         response = http_post_call(url.hostname, url.port, '/rest/getutxos'+json_request+self.FORMAT_SEPARATOR+'json', '', True)
         assert_equal(response.status, 200) #must be a 200 because we are within the limits
 
-        # Generate a block to not affect upcoming tests.
-        auxpow.mineScryptAux(self.nodes[0], "98", True) #generate
+        # generate a block to not affect upcoming tests
+        self.nodes[0].generate(1)
         self.sync_all()
         bb_hash = self.nodes[0].getbestblockhash()
 
@@ -223,7 +221,7 @@ class RESTTest (BitcoinTestFramework):
         response_header = http_get_call(url.hostname, url.port, '/rest/headers/1/'+bb_hash+self.FORMAT_SEPARATOR+"bin", True)
         assert_equal(response_header.status, 200)
         headerLen = int(response_header.getheader('content-length'))
-        assert_equal(headerLen, 297) # DOGE: AuxPoW makes headers longer
+        assert_equal(headerLen, 80)
         response_header_str = response_header.read()
         assert_equal(response_str[0:headerLen], response_header_str)
 
@@ -289,7 +287,6 @@ class RESTTest (BitcoinTestFramework):
         hex_string = http_get_call(url.hostname, url.port, '/rest/tx/'+tx_hash+self.FORMAT_SEPARATOR+"hex", True)
         assert_equal(hex_string.status, 200)
         assert_greater_than(int(response.getheader('content-length')), 10)
-
 
         # check block tx details
         # let's make 3 tx and mine them on node 1

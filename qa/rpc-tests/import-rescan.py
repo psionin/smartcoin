@@ -131,7 +131,7 @@ class ImportRescanTest(BitcoinTestFramework):
             variant.label = "label {} {}".format(i, variant)
             variant.address = self.nodes[1].validateaddress(self.nodes[1].getnewaddress(variant.label))
             variant.key = self.nodes[1].dumpprivkey(variant.address["address"])
-            variant.initial_amount = 10 - (i + 1) / 4.0
+            variant.initial_amount = Decimal(str((10 - (i + 1) / 4.0) / 10.0))
             variant.initial_txid = self.nodes[0].sendtoaddress(variant.address["address"], variant.initial_amount)
 
         # Generate a block containing the initial transactions, then another
@@ -155,14 +155,14 @@ class ImportRescanTest(BitcoinTestFramework):
                 variant.expected_txs = 1
                 variant.check(variant.initial_txid, variant.initial_amount, 2)
             else:
-                variant.expected_balance = 0
+                variant.expected_balance = Decimal("0")
                 variant.expected_txs = 0
                 variant.check()
 
         # Create new transactions sending to each address.
-        fee = self.nodes[0].getnetworkinfo()["relayfee"]
+        #fee = self.nodes[0].getnetworkinfo()["relayfee"]
         for i, variant in enumerate(IMPORT_VARIANTS):
-            variant.sent_amount = 10 - (2 * i + 1) / 8.0
+            variant.sent_amount = Decimal(str((10 - (2 * i + 1) / 8.0) / 10.0))
             variant.sent_txid = self.nodes[0].sendtoaddress(variant.address["address"], variant.sent_amount)
 
         # Generate a block containing the new transactions.
@@ -172,7 +172,7 @@ class ImportRescanTest(BitcoinTestFramework):
 
         # Check the latest results from getbalance and listtransactions.
         for variant in IMPORT_VARIANTS:
-            if not variant.expect_disabled:
+            if not variant.expect_disabled: # and variant.rescan == Rescan.yes:
                 variant.expected_balance += variant.sent_amount
                 variant.expected_txs += 1
                 variant.check(variant.sent_txid, variant.sent_amount, 1)
